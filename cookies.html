@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Consent Banner</title>
+
+    <!-- Style CSS -->
+    <link rel="stylesheet" href="cookies.css">
+</head>
+
+<body>
+    <div class="cookie-banner">
+        <img src="cookie.png" alt="Cookie Image">
+        <h1>We Value Your Privacy</h1>
+        <p>We use cookies to enhance your experience, analyze traffic, and provide personalized ads. By clicking "Accept All", you consent to the use of cookies. <a href="Policy.html" class="learn-more">Learn more</a></p>
+        <div class="cookie-buttons">
+            <a href="Home.html"><button class="accept-btn">Accept All</button></a>
+            <button class="reject-btn">Reject All</button>
+        </div>
+    </div>
+
+    <script>
+        const cookieBanner = document.querySelector(".cookie-banner"),
+            acceptBtn = document.querySelector(".accept-btn"),
+            rejectBtn = document.querySelector(".reject-btn");
+
+        acceptBtn.onclick = () => {
+            document.cookie = "CookieConsent=Accepted; max-age=" + 60 * 60 * 24 * 30;
+            cookieBanner.style.display = "none";
+        }
+
+        rejectBtn.onclick = () => {
+            cookieBanner.style.display = "none";
+        }
+
+        if (document.cookie.indexOf("CookieConsent=Accepted") !== -1) {
+            cookieBanner.style.display = "none";
+        }
+    </script>
+
+</body>
+
+</html>

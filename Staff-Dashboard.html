@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Character encoding to ensure proper character display -->
+  <meta charset="UTF-8" />
+
+  <!-- Viewport meta tag to ensure responsiveness on all devices -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Title of the page that appears in the browser tab -->
+  <title>Dental Genius - Dashboard</title>
+
+  <!-- Link to external CSS file for the dashboard page styling -->
+  <link rel="stylesheet" href="Staff-Dashboard.css" />
+
+  <!-- Link to the Remix Icon font library for icons used in the page -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
+</head>
+<body>
+  <div class="hamburger-menu" id="hamburger">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </div>
+  <nav class="sidebar-nav" id="sidebar">
+    <div class="nav-header">
+      <img src="dg_logo2.png" alt="Dental Genius" style="width:140px;display:block;margin:0 auto 12px;" />
+    </div>
+    <a href="#" class="nav-item" data-target="welcome">
+      <i class="ri-home-2-line nav-icon"></i>
+      <span>Welcome</span>
+      <i class="ri-arrow-right-s-line nav-arrow"></i>
+    </a>
+    <a href="#" class="nav-item" data-target="appointments">
+      <i class="ri-calendar-2-line nav-icon"></i>
+      <span>Appointments</span>
+      <i class="ri-arrow-right-s-line nav-arrow"></i>
+    </a>
+        <a href="#" class="nav-item" data-target="patients">
+      <i class="ri-team-line nav-icon"></i>
+      <span>Patients</span>
+      <i class="ri-arrow-right-s-line nav-arrow"></i>
+    </a>
+    <a href="Login.html" class="nav-item nav-logout" data-action="logout">
+      <i class="ri-logout-box-r-line nav-icon"></i>
+      <span>Logout</span>
+    </a>
+  </nav>
+  <!-- Main container for the dashboard content -->
+  <div class="container">
+    <!-- Container for the fade-in effect when the dashboard is loaded -->
+    <div class="container fade-in-dashboard">
+
+      <!-- Welcome section (default visible) -->
+      <section id="welcome" class="view active">
+        <div class="welcome-text">WELCOME</div>
+        <div class="future-card" id="future-card">
+          <h3 style="text-align:center">Future Appointments</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Treatment</th>
+                </tr>
+              </thead>
+            </table>
+            <div class="table-scroll" id="future-scroll">
+              <table>
+                <tbody class="appointment-data" id="future-tbody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="future-empty" id="future-empty">
+            <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
+            <p class="empty-text">nothing to see</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section for displaying the appointments booked -->
+      <section id="appointments" class="appointments view">
+        <h3>Appointments Booked</h3>
+        <div class="appt-filters" style="display:flex;gap:10px;margin:10px 0;justify-content:center;">
+          <button id="btn-future" class="appt-filter-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;cursor:pointer;background:#111;color:#fff;">Future Appointments</button>
+          <button id="btn-past" class="appt-filter-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;cursor:pointer;background:#efefef;color:#333;">Past Appointments</button>
+        </div>
+
+        <!-- Table container for appointments list -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th> <!-- Appointment Number -->
+                <th>Date</th> <!-- Appointment Date -->
+                <th>Name</th> <!-- Patient Name -->
+                <th>Treatment</th> <!-- Type of Treatment -->
+              </tr>
+            </thead>
+          </table>
+
+          <!-- Scrollable container for the table body -->
+          <div class="table-scroll">
+            <table>
+              <tbody class="appointment-data future-rows">
+              </tbody>
+              <tbody class="appointment-data past-rows" style="display:none;">
+              </tbody>
+            </table>
+          </div>
+        </div>
+          <div class="future-empty" id="appointments-empty">
+            <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
+            <p class="empty-text">nothing to see</p>
+          </div>
+      </section>
+
+      
+      <!-- Section for displaying the patient list -->
+      <section id="patients" class="patient view">
+        <h3>Patient List</h3>
+
+        <!-- Table container for patient data -->
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>No</th> <!-- Patient Number -->
+                <th>Name</th> <!-- Patient Name -->
+                <th>Email Address</th> <!-- Patient Email Address -->
+              </tr>
+            </thead>
+          </table>
+
+          <!-- Scrollable container for the table body -->
+          <div class="table-scroll">
+            <table>
+              <tbody class="patient-data">
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="future-empty" id="patients-empty">
+          <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
+          <p class="empty-text">nothing to see</p>
+        </div>
+      </section>
+
+      </div>
+  </div>
+  <script>
+    (function() {
+      const hamburger = document.getElementById('hamburger');
+      const sidebar = document.getElementById('sidebar');
+      const views = document.querySelectorAll('.view');
+      const openSidebar = () => sidebar.classList.add('active');
+      const closeSidebar = () => sidebar.classList.remove('active');
+      const toggleSidebar = () => sidebar.classList.toggle('active');
+
+      function showView(id) {
+        views.forEach(v => v.classList.remove('active'));
+        const el = document.getElementById(id);
+        if (el) el.classList.add('active');
+      }
+
+      hamburger.addEventListener('click', toggleSidebar);
+
+      sidebar.querySelectorAll('.nav-item[data-target]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = link.getAttribute('data-target');
+          showView(target);
+          closeSidebar();
+        });
+      });
+
+      // Future appointments rendering (empty by default shows ghost)
+      const FUTURE_APPTS = [];
+      function renderFuture() {
+        const tbody = document.getElementById('future-tbody');
+        const scroll = document.getElementById('future-scroll');
+        const empty = document.getElementById('future-empty');
+        if (!tbody || !empty || !scroll) return;
+        tbody.innerHTML = '';
+        if (FUTURE_APPTS.length === 0) {
+          empty.style.display = 'flex';
+          scroll.style.display = 'none';
+        } else {
+          empty.style.display = 'none';
+          scroll.style.display = 'block';
+          FUTURE_APPTS.forEach((appt, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(idx + 1).padStart(2, '0')}</td>
+              <td>${appt.date || ''}</td>
+              <td>${appt.name || ''}</td>
+              <td>${appt.treatment || ''}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      }
+      renderFuture();
+
+      // Appointments tab filter (Future/Past)
+      const btnFuture = document.getElementById('btn-future');
+      const btnPast = document.getElementById('btn-past');
+      const futureRows = document.querySelector('#appointments .future-rows');
+      const pastRows = document.querySelector('#appointments .past-rows');
+
+      function updateAppointmentsEmpty() {
+        const apptEmpty = document.getElementById('appointments-empty');
+        const apptScroll = document.querySelector('#appointments .table-scroll');
+        if (!apptEmpty || !apptScroll || !futureRows || !pastRows) return;
+        const visibleTbody = (futureRows.style.display === 'none') ? pastRows : futureRows;
+        const hasRows = !!visibleTbody.querySelector('tr');
+        apptEmpty.style.display = hasRows ? 'none' : 'flex';
+        apptScroll.style.display = hasRows ? 'block' : 'none';
+      }
+
+      function updatePatientsEmpty() {
+        const empty = document.getElementById('patients-empty');
+        const scroll = document.querySelector('#patients .table-scroll');
+        const tbody = document.querySelector('#patients .patient-data');
+        if (!empty || !scroll || !tbody) return;
+        const hasRows = !!tbody.querySelector('tr');
+        empty.style.display = hasRows ? 'none' : 'flex';
+        scroll.style.display = hasRows ? 'block' : 'none';
+      }
+
+      function showFutureRows() {
+        if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
+        futureRows.style.display = '';
+        pastRows.style.display = 'none';
+        btnFuture.style.background = '#111';
+        btnFuture.style.color = '#fff';
+        btnPast.style.background = '#efefef';
+        btnPast.style.color = '#333';
+        updateAppointmentsEmpty();
+      }
+      function showPastRows() {
+        if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
+        futureRows.style.display = 'none';
+        pastRows.style.display = '';
+        btnFuture.style.background = '#efefef';
+        btnFuture.style.color = '#333';
+        btnPast.style.background = '#111';
+        btnPast.style.color = '#fff';
+        updateAppointmentsEmpty();
+      }
+      if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
+      if (btnPast) btnPast.addEventListener('click', showPastRows);
+      // Default to show future
+      showFutureRows();
+      updatePatientsEmpty();
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+        
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+.cookie-banner {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: 400px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cookie-banner img {
+    max-width: 80px;
+    margin-bottom: 15px;
+}
+
+.cookie-banner h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.cookie-banner p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.cookie-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cookie-buttons button, 
+.cookie-buttons a {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.accept-btn {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.reject-btn {
+    background-color: #FF5F5F;
+    color: #fff;
+}
+
+.learn-more {
+    background-color: transparent;
+    color: #333;
+    text-decoration: underline;
+}
+
+.cookie-buttons button:hover, 
+.cookie-buttons a:hover {
+    transform: scale(0.98);
+}

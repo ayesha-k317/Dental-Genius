@@ -1,0 +1,419 @@
+/* General Reset: Reset margin, padding, and box-sizing for all elements */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* Body styling: Sets background color and text color */
+body {
+    background-color: #ffffff;
+    color: #000;
+}
+
+/* Views visibility control */
+.view { display: none; }
+.view.active { display: block; }
+
+/* Hamburger Menu */
+.hamburger-menu {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  cursor: pointer;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.bar {
+  width: 20px;
+  height: 2px;
+  background-color: #222;
+  margin: 2px 0;
+  transition: 0.3s;
+}
+
+/* Sidebar Navigation (left) */
+.sidebar-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 240px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  gap: 8px;
+  z-index: 999;
+  transition: left 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+}
+
+.sidebar-nav:not(.active) {
+  left: -260px;
+}
+
+.sidebar-nav.active {
+  left: 0;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 28px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  border-radius: 8px;
+  margin: 0 12px;
+  background: none;
+  color: #222;
+  text-decoration: none;
+}
+
+.nav-item:hover {
+  background: #f7c94822;
+  color: #008080;
+}
+
+.nav-icon {
+  font-size: 1.2rem;
+  margin-right: 16px;
+  color: #f7c948;
+}
+
+.nav-arrow {
+  margin-left: auto;
+  font-size: 1rem;
+  color: #bbb;
+  transition: color 0.2s;
+}
+
+.nav-item:hover .nav-arrow {
+  color: #008080;
+  rotate: 180deg;
+}
+
+/* Stick logout to bottom-left inside sidebar */
+.nav-logout {
+  margin-top: auto;
+}
+
+/* Main container styling: Centers content with a max width */
+.container {
+    max-width: 1000px;
+    margin: auto;
+}
+
+/* Navbar styling: Flexbox layout for the navigation bar */
+.navbar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    animation: fadeInDown 1s ease-out;
+}
+
+/* Menu icon styling: Adjusts font size and cursor for the icon */
+.menu-icon {
+    font-size: 2rem;
+    cursor: pointer;
+    display: block;
+    margin-right: 25px;
+}
+
+/* Welcome text styling: Sets font size, letter-spacing, and font-weight for the welcome message */
+.welcome-text {
+    font-size: 1.5rem;
+    letter-spacing: 0.3rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+}
+
+/* Logo styling: Sets width and animation for the logo */
+.logo {
+    width: 120px;
+    animation: slideIn 1s ease-out;
+}
+
+/* Appointment section styling: Adds margin at the bottom */
+.appointment-section{
+    margin-bottom: 60px;
+}
+
+/* Heading styling for appointment section: Font size and margin */
+.appointment-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Patient section styling: Adds margin at the bottom */
+.appointment-section{
+    margin-bottom: 60px;
+}
+
+/* Heading styling for patient section: Font size and margin */
+.paitent-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 1s ease-out;
+}
+
+/* Appointments heading styling: Sets font size, margin, and animation for appointment title */
+.appointments h3 {
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Patient heading styling: Sets font size, margin, and animation for patient title */
+.patient h3 {
+    font-size: 1.5rem;
+    margin: 2rem 0 1rem;
+    animation: fadeInUp 1s ease-out;
+}
+
+/* Table container styling: Adds background color, padding, and animation */
+.table-container {
+    background-color: #eaeaea;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    animation: fadeIn 1.5s ease-out;
+    overflow-x: auto;
+}
+
+/* Header for the table: Flexbox for alignment, font weight, and margin */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 2rem;
+    color: gray;
+    min-width: 400px;
+}
+
+/* Table styling: Ensures table fills container, and collapses borders */
+table {
+    width: 100%;
+    border-collapse: separate;
+    table-layout: fixed;
+}
+
+/* Scrollable table body styling */
+.table-scroll {
+    height: 200px;
+    overflow-y: auto;
+}
+
+/* Table header cell styling: Aligns text, adds padding */
+th {
+    text-align: left;
+    padding-bottom: 0.5rem;
+    color: gray;
+    padding-left: 1rem;
+}
+
+/* Appointment data cell styling: Adds padding and transition effect */
+.appointment-data td {
+    background: white;
+    padding: 1rem;
+    transition: transform 0.2s ease;
+}
+
+/* Table row styling */
+tr {
+  display: table-row; /* Ensures rows are displayed as table rows */
+}
+
+/* Table cell styling */
+th, td {
+  display: table-cell; /* Ensures table cells behave like table cells */
+}
+
+/* Hover effect for appointment rows: Enlarges row slightly and changes background */
+.appointment-data tr:hover td {
+    transform: scale(1.01);
+    background-color: #f0f0f0;
+}
+
+/* Patient data cell styling: Adds padding and transition effect */
+.patient-data td {
+    background: white;
+    padding: 1rem;
+    transition: transform 0.2s ease;
+}
+
+/* Hover effect for patient rows: Enlarges row slightly and changes background */
+.patient-data tr:hover td {
+    transform: scale(1.01);
+    background-color: #f0f0f0;
+}
+
+/* Animations */
+
+/* Fade-in animation for elements */
+@keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade-in-down animation for elements */
+@keyframes fadeInDown {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Fade-in-up animation for elements */
+@keyframes fadeInUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Floating effect for ghost elements */
+@keyframes floatGhost {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Pulse effect for elements */
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Dashboard fade-in animation */
+.fade-in-dashboard {
+    animation: dashboardFade 1s ease-out;
+    opacity: 0;
+    transform: translateY(30px);
+    animation-fill-mode: forwards;
+}
+
+/* Keyframe for dashboard fade-in effect */
+@keyframes dashboardFade {
+    to {
+    opacity: 1;
+    transform: translateY(0);
+    }
+}
+
+/* Logout button styling */
+.logout a {
+    text-decoration: none;
+}
+
+/* Remove old floating logout icon styles */
+.logout i { display: none; }
+
+/* Center Appointments and Patients sections */
+.appointments.view.active,
+.patient.view.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.appointments h3,
+.patient h3 {
+  text-align: center;
+}
+
+.appointments .table-container,
+.patient .table-container {
+  max-width: 700px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Future Appointments card in Welcome */
+.future-card {
+  margin: 16px auto 0;
+  background: #f6f6f6;
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 700px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+.future-card h3 {
+  margin-bottom: 12px;
+  text-align: center;
+}
+.future-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  color: #777;
+}
+.empty-text {
+  margin-top: 8px;
+  font-style: italic;
+}
+.future-list {
+  list-style: none;
+  padding-left: 0;
+}
+.future-list li {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+/* Simple floating ghost */
+.ghost {
+  width: 60px;
+  height: 60px;
+  background: #fff;
+  border-radius: 50% 50% 10% 10%;
+  position: relative;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  animation: floatGhost 3s ease-in-out infinite;
+}
+.ghost:after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 0;
+  right: 0;
+  height: 10px;
+  background: radial-gradient(circle at 10px 5px, #fff 6px, transparent 7px),
+              radial-gradient(circle at 30px 5px, #fff 6px, transparent 7px),
+              radial-gradient(circle at 50px 5px, #fff 6px, transparent 7px);
+}
+.ghost-eyes {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 36px;
+  display: flex;
+  justify-content: space-between;
+}
+.ghost-eyes span {
+  width: 8px;
+  height: 8px;
+  background: #333;
+  border-radius: 50%;
+}
+
+/* Center Welcome view content */
+#welcome.view.active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
