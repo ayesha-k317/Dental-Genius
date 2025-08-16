@@ -7,7 +7,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3001;
 
-//  PostgreSQL connection using environment variable (Render/Supabase)
+// PostgreSQL connection using environment variable (Render/Supabase)
 const pool = new Pool({
   connectionString: process.env.DATABASE_VARIABLE,
   ssl: {
@@ -17,12 +17,23 @@ const pool = new Pool({
 
 // Middleware
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname))); // Serve HTML, CSS, JS, images
 app.use(session({
-  secret: 'yourSecretKey', 
+  secret: 'yourSecretKey',
   resave: false,
   saveUninitialized: true
 }));
+
+// Serve static HTML files explicitly
+app.get('/login.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+app.get('/Staff-Dashboard.html', (req, res) => {
+  if (!req.session.username) {
+    return res.redirect('/login.html');
+  }
+  res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
+});
 
 // Create appointments table if it doesn't exist
 pool.query(`
@@ -100,15 +111,7 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// GET: Protected staff dashboard
-app.get('/Staff-Dashboard.html', (req, res) => {
-  if (!req.session.username) {
-    return res.redirect('/login.html');
-  }
-  res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
-});
-
-// Fallback route
+// Catch-all fallback to login.html
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
