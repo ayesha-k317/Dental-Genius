@@ -1,262 +1,261 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" type="text/css" href="Home.css">
-<title>Dental Genius Clinic</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="Home.css">
+    <title>Dental Genius Clinic</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-<div class="hamburger-menu" id="hamburger">
-<span class="bar"></span>
-<span class="bar"></span>
-<span class="bar"></span>
-</div>
-<nav class="sidebar-nav" id="sidebar">
-<a href="#top" class="nav-item">
-<i class="ri-bard-fill nav-icon"></i>
-<span>About Us</span>
-<i class="ri-arrow-right-s-line nav-arrow"></i>
-</a>
-<a href="#next-section" class="nav-item">
-<i class="ri-bard-fill nav-icon"></i>
-<span>Our Services</span>
-<i class="ri-arrow-right-s-line nav-arrow"></i>
-</a>
-<a href="#doctors" class="nav-item">
-<i class="ri-bard-fill nav-icon"></i>
-<span>Our Doctors</span>
-<i class="ri-arrow-right-s-line nav-arrow"></i>
-</a>
-<a href="#patients" class="nav-item">
-<i class="ri-bard-fill nav-icon"></i>
-<span>Our Patients</span>
-<i class="ri-arrow-right-s-line nav-arrow"></i>
-</a>
-<a href="Book an appointment.html" class="nav-item">
-<i class="ri-bard-fill nav-icon"></i>
-<span>Book An Appointment</span>
-<i class="ri-arrow-right-s-line nav-arrow"></i>
-</a>
-<a href="Login.html" class="nav-item">
-<i class="ri-bard-fill nav-icon"></i>
-<span>Sign In</span>
-<i class="ri-arrow-right-s-line nav-arrow"></i>
-</a>
-</nav>
-<script>
-(function() {
-const hamburger = document.getElementById('hamburger');
-const sidebar = document.getElementById('sidebar');
-const toggle = () => sidebar.classList.toggle('active');
-hamburger.addEventListener('click', toggle);
-sidebar.querySelectorAll('.nav-item').forEach(item => {
-item.addEventListener('click', () => sidebar.classList.remove('active'));
-});
-})();
-</script>
-<header id="top" class="homepage-header">
-<h1>WELCOME TO</h1>
-<img src="dg_logo1.png" alt="Dental Genius Logo" class="logo">
-<p>5-Star Dental Clinic</p> 
-<a href="#next-section" class="cta-button">LEARN MORE<i class="ri-arrow-right-line"></i></a>
-</header> 
+    <div class="hamburger-menu" id="hamburger">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+    </div>
+    <nav class="sidebar-nav" id="sidebar">
+        <a href="#top" class="nav-item">
+            <i class="ri-bard-fill nav-icon"></i>
+            <span>About Us</span>
+            <i class="ri-arrow-right-s-line nav-arrow"></i>
+        </a>
+        <a href="#next-section" class="nav-item">
+            <i class="ri-bard-fill nav-icon"></i>
+            <span>Our Services</span>
+            <i class="ri-arrow-right-s-line nav-arrow"></i>
+        </a>
+        <a href="#doctors" class="nav-item">
+            <i class="ri-bard-fill nav-icon"></i>
+            <span>Our Doctors</span>
+            <i class="ri-arrow-right-s-line nav-arrow"></i>
+        </a>
+        <a href="#patients" class="nav-item">
+            <i class="ri-bard-fill nav-icon"></i>
+            <span>Our Patients</span>
+            <i class="ri-arrow-right-s-line nav-arrow"></i>
+        </a>
+        <a href="Book an appointment.html" class="nav-item">
+            <i class="ri-bard-fill nav-icon"></i>
+            <span>Book An Appointment</span>
+            <i class="ri-arrow-right-s-line nav-arrow"></i>
+        </a>
+                        <a href="Login.html" class="nav-item">
+            <i class="ri-bard-fill nav-icon"></i>
+            <span>Sign In</span>
+            <i class="ri-arrow-right-s-line nav-arrow"></i>
+        </a>
+    </nav>
+    <script>
+        (function() {
+            const hamburger = document.getElementById('hamburger');
+            const sidebar = document.getElementById('sidebar');
+            const toggle = () => sidebar.classList.toggle('active');
+            hamburger.addEventListener('click', toggle);
+            sidebar.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', () => sidebar.classList.remove('active'));
+            });
+        })();
+    </script>
+    <header id="top" class="homepage-header">
+        <h1>WELCOME TO</h1>
+        <img src="dg_logo1.png" alt="Dental Genius Logo" class="logo">
+        <p>5-Star Dental Clinic</p> 
+        <a href="#next-section" class="cta-button">LEARN MORE<i class="ri-arrow-right-line"></i></a>
+    </header> 
 
-<section id="next-section" class="services-container">
-<h1 class="services-heading">OUR SERVICES</h1>
-<div class="content-wrapper">
-<div class="left-column">
-<p><strong>Teeth Whitening</strong></p>
-<p>Brighten your smile with our safe and effective whitening treatments.</p><br>
-<p><strong>Wisdom Teeth Removal</strong></p>
-<p>Our experienced team ensures a smooth and comfortable extraction when it’s time for those tricky wisdom teeth to go.</p><br>
-<p><strong>Tooth Extraction</strong></p>
-<p>Whether it's a decayed tooth or one that’s causing discomfort, we provide gentle extractions to restore your dental health.</p><br>
-</div>
+    <section id="next-section" class="services-container">
+        <h1 class="services-heading">OUR SERVICES</h1>
+        <div class="content-wrapper">
+            <div class="left-column">
+                <p><strong>Teeth Whitening</strong></p>
+                <p>Brighten your smile with our safe and effective whitening treatments.</p><br>
+                <p><strong>Wisdom Teeth Removal</strong></p>
+                <p>Our experienced team ensures a smooth and comfortable extraction when it’s time for those tricky wisdom teeth to go.</p><br>
+                <p><strong>Tooth Extraction</strong></p>
+                <p>Whether it's a decayed tooth or one that’s causing discomfort, we provide gentle extractions to restore your dental health.</p><br>
+            </div>
 
-<div class="center-image-container">
-<img src="tooth.png" alt="Service Image" class="services-image">
-</div>
+            <div class="center-image-container">
+                <img src="tooth.png" alt="Service Image" class="services-image">
+            </div>
 
-<div class="right-column">
-<p><strong>Fillings & Restorations</strong></p>
-<p>We use the latest materials to restore your teeth to their natural look and function.</p><br>
-<p><strong>Invisalign</strong></p>
-<p>A clear, comfortable way to straighten your teeth without the hassle of traditional braces.</p><br>
-<p><strong>Routine Cleanings & Exams</strong></p>
-<p>Keep your smile healthy with regular check-ups and cleanings.</p><br>
-</div>
-</div>
-</section>
+            <div class="right-column">
+                <p><strong>Fillings & Restorations</strong></p>
+                <p>We use the latest materials to restore your teeth to their natural look and function.</p><br>
+                <p><strong>Invisalign</strong></p>
+                <p>A clear, comfortable way to straighten your teeth without the hassle of traditional braces.</p><br>
+                <p><strong>Routine Cleanings & Exams</strong></p>
+                <p>Keep your smile healthy with regular check-ups and cleanings.</p><br>
+            </div>
+        </div>
+    </section>
 
-<section id="doctors" class="doctors-section">
-<h1>OUR DOCTORS</h1>
-<div class="row image-row">
-<div class="box image-box">
-<img src="doctor_1.jpeg" alt="Dr. Emily Harper" class="doctor-image">
-</div>
-<div class="box image-box">
-<img src="doctor_2.jpeg" alt="Dr. Natalie Clarke" class="doctor-image">
-</div>
-<div class="box image-box">
-<img src="doctor_3.jpeg" alt="Dr. Mark Davis" class="doctor-image">
-</div>
-<div class="box image-box">
-<img src="doctor_4.jpeg" alt="Dr. James Lee" class="doctor-image">
-</div>
-</div>
+    <section id="doctors" class="doctors-section">
+        <h1>OUR DOCTORS</h1>
+        <div class="row image-row">
+            <div class="box image-box">
+                <img src="doctor_1.jpeg" alt="Dr. Emily Harper" class="doctor-image">
+            </div>
+            <div class="box image-box">
+                <img src="doctor_2.jpeg" alt="Dr. Natalie Clarke" class="doctor-image">
+            </div>
+            <div class="box image-box">
+                <img src="doctor_3.jpeg" alt="Dr. Mark Davis" class="doctor-image">
+            </div>
+            <div class="box image-box">
+                <img src="doctor_4.jpeg" alt="Dr. James Lee" class="doctor-image">
+            </div>
+        </div>
 
-<div class="row description-row">
-<div class="box description-box">
-<h2>Dr. Emily Harper</h2>
-<p class="dr1">Experience: 10+ Years</p>
-<p>Dr. Harper combines expertise in general dentistry and cosmetic procedures with a friendly, approachable demeanor. She is dedicated to educating patients on the importance of dental health and creating a comfortable environment for all.</p>
-</div>
-<div class="box description-box">
-<h2>Dr. Natalie Clarke</h2>
-<p class="dr2">Experience: 7+ Years</p>
-<p>Dr. Clarke is known for her compassionate and gentle approach. She takes the time to ensure that all patients feel comfortable and well-informed throughout their treatment.</p>
-</div>
-<div class="box description-box">
-<h2>Dr. Mark Davis</h2>
-<p class="dr3">Experience: 13+ Years</p>
-<p>Dr. Davis is a detail-oriented dentist with a strong commitment to excellence. His meticulous approach and use of the latest dental technologies ensure the highest standard of care. Dr. Davis values precision and is dedicated to delivering long-lasting results.</p>
-</div>
-<div class="box description-box">
-<h2>Dr. James Lee</h2>
-<p class="dr4">Experience: 5+ Years</p>
-                <p>Dr. Lee specializes in advanced dental procedures and is passionate about incorporating the latest technology into his practice. His innovative approach allows him to provide effective, state-of-the-art care while maintaining clear communication with his patients.</p>
+        <div class="row description-row">
+            <div class="box description-box">
+                <h2>Dr. Emily Harper</h2>
+                <p class="dr1">Experience: 10+ Years</p>
+                <p>Dr. Harper combines expertise in general dentistry and cosmetic procedures with a friendly, approachable demeanor. She is dedicated to educating patients on the importance of dental health and creating a comfortable environment for all.</p>
+            </div>
+            <div class="box description-box">
+                <h2>Dr. Natalie Clarke</h2>
+                <p class="dr2">Experience: 7+ Years</p>
+                <p>Dr. Clarke is known for her compassionate and gentle approach. She takes the time to ensure that all patients feel comfortable and well-informed throughout their treatment.</p>
+            </div>
+            <div class="box description-box">
+                <h2>Dr. Mark Davis</h2>
+                <p class="dr3">Experience: 13+ Years</p>
+                <p>Dr. Davis is a detail-oriented dentist with a strong commitment to excellence. His meticulous approach and use of the latest dental technologies ensure the highest standard of care. Dr. Davis values precision and is dedicated to delivering long-lasting results.</p>
+            </div>
+            <div class="box description-box">
+                <h2>Dr. James Lee</h2>
+                <p class="dr4">Experience: 5+ Years</p>
                 <p>Dr. Lee specializes in advanced dental procedures and is passionate about incorporating the latest technology into his practice. His innovative approach delivers effective, state-of-the-art care while ensuring clear communication with his patients.</p>
-</div>
-</div>
-</section>
+            </div>
+        </div>
+    </section>
 
-<section id="patients" class="testimonials-section">
-<h1>OUR PATIENTS</h1>
-<div class="testimonials-container">
-<div class="testimonial-card">
-<div class="quote"><img src="quote.png"></div>
-<p>The front desk, hygienists, and dentists are all fantastic. It’s rare to find a clinic where every person you meet makes you feel valued. Plus, they’re great with kids—my son actually looks forward to coming!</p>
-<div class="author">Robert T.</div>
-<hr>
-</div>
+    <section id="patients" class="testimonials-section">
+        <h1>OUR PATIENTS</h1>
+        <div class="testimonials-container">
+            <div class="testimonial-card">
+                <div class="quote"><img src="quote.png"></div>
+                <p>The front desk, hygienists, and dentists are all fantastic. It’s rare to find a clinic where every person you meet makes you feel valued. Plus, they’re great with kids—my son actually looks forward to coming!</p>
+                <div class="author">Robert T.</div>
+                <hr>
+            </div>
 
-<div class="testimonial-card">
-<div class="quote"><img src="quote.png"></div>
-<p>The clinic is state-of-the-art, and it shows in everything they do. I had Invisalign done here, and the results are amazing. The staff was knowledgeable and supportive the entire way through. I couldn’t be happier!</p>
-<div class="author">Jason R.</div>
-<hr>
-</div>
+            <div class="testimonial-card">
+                <div class="quote"><img src="quote.png"></div>
+                <p>The clinic is state-of-the-art, and it shows in everything they do. I had Invisalign done here, and the results are amazing. The staff was knowledgeable and supportive the entire way through. I couldn’t be happier!</p>
+                <div class="author">Jason R.</div>
+                <hr>
+            </div>
 
-<div class="testimonial-card">
-<div class="quote"><img src="quote.png"></div>
-<p>Fast, friendly, and professional. I came in with a toothache and left pain-free with a clear plan for my dental health. I really appreciate how the dentist took the time to answer my questions and explain the X-rays in detail.</p>
-<div class="author">Lisa K.</div>
-<hr>
-</div>
-</div>
-</section>
+            <div class="testimonial-card">
+                <div class="quote"><img src="quote.png"></div>
+                <p>Fast, friendly, and professional. I came in with a toothache and left pain-free with a clear plan for my dental health. I really appreciate how the dentist took the time to answer my questions and explain the X-rays in detail.</p>
+                <div class="author">Lisa K.</div>
+                <hr>
+            </div>
+        </div>
+    </section>
 
-<footer class="footer">
-<div class="footer-logo">
-<img src="dg_logo2.png" alt="Dental Genius Logo">
-</div>
+    <footer class="footer">
+        <div class="footer-logo">
+            <img src="dg_logo2.png" alt="Dental Genius Logo">
+        </div>
 
-<div class="footor-heading">
-<h1>Book An Appointment</h1>
-<p>We’d love to hear from you! Whether you're ready to schedule your next appointment, or just have a question about our services  — our team is here to help.</p>
-<a href="Book an appointment.html" class="footer-btn">BOOK AN APPOINTMENT</a>
-</div>
+        <div class="footor-heading">
+            <h1>Book An Appointment</h1>
+            <p>We’d love to hear from you! Whether you're ready to schedule your next appointment, or just have a question about our services  — our team is here to help.</p>
+            <a href="Book an appointment.html" class="footer-btn">BOOK AN APPOINTMENT</a>
+        </div>
 
 
 
-<div class="footer-container">
-<div class="contact-info">
-<p>yo@dental-genius.com</p>
-</div>
-<div class="contact-info-2">
-<p>+(123) 456-7890</p>
-</div>
-<div class="social-media">
-<a href="#" class="social-icon">
-<i class="fa-brands fa-facebook"></i>
-</a>
-<a href="#" class="social-icon">
-<i class="fa-brands fa-square-x-twitter"></i>
-</a>
-<a href="#" class="social-icon">
-<i class="fa-brands fa-square-instagram"></i>
-</a>
-</div>
-</div>
-</footer>
+        <div class="footer-container">
+            <div class="contact-info">
+                <p>yo@dental-genius.com</p>
+            </div>
+            <div class="contact-info-2">
+                <p>+(123) 456-7890</p>
+            </div>
+            <div class="social-media">
+                <a href="#" class="social-icon">
+                    <i class="fa-brands fa-facebook"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fa-brands fa-square-x-twitter"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fa-brands fa-square-instagram"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
 
-<!-- Cookie popup styled like cookies.html, no overlay or close -->
-<style>
-.cookie-banner {
-position: fixed;
-bottom: 20px;
-left: 50%;
-transform: translateX(-50%);
-z-index: 1500;
-max-width: 400px;
-width: calc(100vw - 32px);
-background-color: #fff;
-padding: 20px;
-border-radius: 12px;
-box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-text-align: center;
-}
-.cookie-banner[hidden] { display: none; }
-.cookie-banner img { max-width: 80px; margin-bottom: 15px; }
-.cookie-banner h1 { font-size: 22px; margin-bottom: 10px; color: #333; }
-.cookie-banner p { font-size: 14px; color: #666; margin-bottom: 20px; }
-.cookie-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.cookie-buttons button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: 0.3s; width: 100%; }
-.accept-btn { background-color: #4CAF50; color: #fff; }
-.reject-btn { background-color: #FF5F5F; color: #fff; }
-.learn-more { color: #333; text-decoration: underline; }
-.cookie-buttons button:hover { transform: scale(0.98); }
-</style>
-<div id="cookie-consent" class="cookie-banner" hidden>
-<img src="cookie.png" alt="Cookie Image">
-<h1>We Value Your Privacy</h1>
-<p>We use cookies to enhance your experience, analyze traffic, and provide personalized ads. By clicking "Accept All", you consent to the use of cookies. <a href="Policy.html" class="learn-more">Learn more</a></p>
-<div class="cookie-buttons">
-<button id="cookie-accept" class="accept-btn">Accept All</button>
-<button id="cookie-reject" class="reject-btn">Reject All</button>
-</div>
-</div>
+    <!-- Cookie popup styled like cookies.html, no overlay or close -->
+    <style>
+      .cookie-banner {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1500;
+        max-width: 400px;
+        width: calc(100vw - 32px);
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      .cookie-banner[hidden] { display: none; }
+      .cookie-banner img { max-width: 80px; margin-bottom: 15px; }
+      .cookie-banner h1 { font-size: 22px; margin-bottom: 10px; color: #333; }
+      .cookie-banner p { font-size: 14px; color: #666; margin-bottom: 20px; }
+      .cookie-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .cookie-buttons button { padding: 10px 20px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: 0.3s; width: 100%; }
+      .accept-btn { background-color: #4CAF50; color: #fff; }
+      .reject-btn { background-color: #FF5F5F; color: #fff; }
+      .learn-more { color: #333; text-decoration: underline; }
+      .cookie-buttons button:hover { transform: scale(0.98); }
+    </style>
+    <div id="cookie-consent" class="cookie-banner" hidden>
+      <img src="cookie.png" alt="Cookie Image">
+      <h1>We Value Your Privacy</h1>
+      <p>We use cookies to enhance your experience, analyze traffic, and provide personalized ads. By clicking "Accept All", you consent to the use of cookies. <a href="Policy.html" class="learn-more">Learn more</a></p>
+      <div class="cookie-buttons">
+        <button id="cookie-accept" class="accept-btn">Accept All</button>
+        <button id="cookie-reject" class="reject-btn">Reject All</button>
+      </div>
+    </div>
 
-<script>
-(function(){
-const banner = document.getElementById('cookie-consent');
-const accept = document.getElementById('cookie-accept');
-const reject = document.getElementById('cookie-reject');
+    <script>
+      (function(){
+        const banner = document.getElementById('cookie-consent');
+        const accept = document.getElementById('cookie-accept');
+        const reject = document.getElementById('cookie-reject');
 
-const show = () => { if (banner) banner.hidden = false; };
-const hide = () => { if (banner) banner.hidden = true; };
+        const show = () => { if (banner) banner.hidden = false; };
+        const hide = () => { if (banner) banner.hidden = true; };
 
-// Show if no stored choice yet
-try {
-const saved = localStorage.getItem('cookieConsent');
-if (!saved) show();
-} catch(e) { show(); }
+        // Show if no stored choice yet
+        try {
+          const saved = localStorage.getItem('cookieConsent');
+          if (!saved) show();
+        } catch(e) { show(); }
 
-if (accept) accept.addEventListener('click', () => {
-try { localStorage.setItem('cookieConsent', 'accepted'); } catch(e) {}
-hide();
-});
+        if (accept) accept.addEventListener('click', () => {
+          try { localStorage.setItem('cookieConsent', 'accepted'); } catch(e) {}
+          hide();
+        });
 
-if (reject) reject.addEventListener('click', () => {
-try { localStorage.setItem('cookieConsent', 'rejected'); } catch(e) {}
-hide();
-});
-})();
-</script>
+        if (reject) reject.addEventListener('click', () => {
+          try { localStorage.setItem('cookieConsent', 'rejected'); } catch(e) {}
+          hide();
+        });
+      })();
+    </script>
 
 </body>
-</html>
+</html>   
