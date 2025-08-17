@@ -52,9 +52,7 @@ app.post('/submit-appointment', async (req, res) => {
 
     try {
         // Format appointmentTime as ISO string for consistency
-        const appointmentTime = d.appointmentTime
-            ? new Date(d.appointmentTime).toISOString()
-            : null;
+        const appointmentTime = d.appointmentTime || null;
 
         const result = await pool.query(`
             INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
@@ -105,5 +103,5 @@ app.get('/appointments', async (req, res) => {
 
 // Start server
 app.listen(port, () => {
-    console.log(`🚀 Server running at http://localhost:${port}`);
+    console.log(`Server running at http://localhost:${port}`);
 });
