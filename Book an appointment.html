@@ -71,27 +71,33 @@
         appointmentTime: form.appointmentTime.value
       };
   
-      const response = await fetch('/submit-appointment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
+      try {
+        const response = await fetch('/submit-appointment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(data)
+        });
   
-      const result = await response.json();
+        const result = await response.json();
   
-      if (result.success) {
-        alert('✅
-              Appointment saved successfully!');
-      } else {
-        alert('❌ Failed to save appointment: ' + result.message);
+        if (result.success) {
+          alert('✅ Appointment saved successfully!');
+          form.reset(); // optional: clear the form
+        } else {
+          alert('❌ Failed to save appointment: ' + result.message);
+        }
+      } catch (error) {
+        alert('❌ An error occurred while submitting.');
+        console.error('Submission error:', error);
       }
     });
   </script>
 
 </body>
 </html>
+
 
 
 
