@@ -279,7 +279,7 @@ html {
     justify-content: space-between;
     max-width: 1000px;
     margin: 0 auto;
-    gap: 10px;
+    gap: 40px;
 }
 
 .left-column p {
@@ -292,7 +292,7 @@ html {
 
 .left-column, .right-column {
     flex: 1;
-    padding: 10px;
+    padding: 20px;
 }
 
 .left-column p, .right-column p {
