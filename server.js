@@ -123,7 +123,7 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// Optional: fallback route (sends login page for unknown routes)
+// fallback route (sends login page for unknown routes)
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
@@ -132,3 +132,4 @@ app.get('*', (req, res) => {
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
