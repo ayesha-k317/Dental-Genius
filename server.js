@@ -10,13 +10,14 @@ const port = process.env.PORT || 3001;
 // Middleware
 app.use(express.static(__dirname)); // Serves static files (HTML, CSS, images)
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true })); // ✅ Added to support form submissions
 app.use(session({
     secret: 'yourSecretKey',       // Use env variable in production
     resave: false,
-    saveUninitialized: true        // Quick dev setup
+    saveUninitialized: true
 }));
 
-// PostgreSQL connection (update credentials if needed)
+// PostgreSQL connection
 const pool = new Pool({
     connectionString: 'postgresql://postgres.flqlhsdwskwexdhcbzlr:DentalGeniusClinic123!@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres'
 });
@@ -26,7 +27,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'Home.html'));
 });
 
-// Create appointments table if it doesn't exist
+// Create appointments table (fixed trailing comma)
 pool.query(`
     CREATE TABLE IF NOT EXISTS appointments (
         id SERIAL PRIMARY KEY,
@@ -34,18 +35,18 @@ pool.query(`
         lastName TEXT,
         email TEXT,
         treatment TEXT,
-        appointmentTime TEXT,
+        appointmentTime TEXT
     )
 `).catch(console.error);
 
-// Handle appointment submission
+// Handle appointment submission from HTML form
 app.post('/submit-appointment', async (req, res) => {
     const d = req.body;
 
     try {
         await pool.query(`
-          INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
-          VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
+            VALUES ($1, $2, $3, $4, $5)
         `, [d.firstName, d.lastName, d.email, d.treatment, d.appointmentTime]);
 
         res.json({ success: true, message: 'Appointment saved successfully!' });
@@ -91,5 +92,3 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
-
-
