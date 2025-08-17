@@ -2,25 +2,31 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const { Pool } = require('pg');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 // Middleware
-app.use(express.static(__dirname));
+app.use(express.static(__dirname)); // Serves static files (HTML, CSS, images)
 app.use(bodyParser.json());
 app.use(session({
-    secret: 'yourSecretKey',       // Consider storing this in an environment variable
+    secret: 'yourSecretKey',       // Use env variable in production
     resave: false,
-    saveUninitialized: true        // Allows unmodified sessions to be saved (for quick setup)
+    saveUninitialized: true        // Quick dev setup
 }));
 
-// PostgreSQL connection
+// PostgreSQL connection (update credentials if needed)
 const pool = new Pool({
     connectionString: 'postgresql://postgres.flqlhsdwskwexdhcbzlr:DentalGeniusClinic123!@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres'
 });
 
-// Auto-create appointments table
+// Serve Home.html at root path
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Home.html'));
+});
+
+// Create appointments table if it doesn't exist
 pool.query(`
     CREATE TABLE IF NOT EXISTS appointments (
         id SERIAL PRIMARY KEY,
@@ -55,7 +61,7 @@ app.post('/submit-appointment', async (req, res) => {
 // Login (hardcoded for demo)
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const validUser = username === 'admin@gmail.com' && password === 'password123';
+    const validUser = username === 'admin' && password === 'password123';
 
     if (validUser) {
         req.session.username = username;
@@ -74,7 +80,7 @@ app.get('/check-auth', (req, res) => {
     }
 });
 
-// Fetch appointments 
+// Fetch all appointments
 app.get('/appointments', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM appointments');
