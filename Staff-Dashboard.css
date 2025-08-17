@@ -314,7 +314,7 @@ th, td {
     text-decoration: none;
 }
 
-/* Remove old floating logout icon styles */
+
 .logout i { display: none; }
 
 /* Center Appointments and Patients sections */
