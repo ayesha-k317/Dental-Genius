@@ -3,11 +3,12 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const { Pool } = require('pg');
 const path = require('path');
+const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-// PostgreSQL connection using environment variable (Render/Supabase)
+// PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_VARIABLE,
   ssl: {
@@ -17,13 +18,20 @@ const pool = new Pool({
 
 // Middleware
 app.use(bodyParser.json());
+
 app.use(session({
+  store: new pgSession({
+    pool: pool,
+  }),
   secret: 'yourSecretKey',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false,
+  cookie: {
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+  }
 }));
 
-// Serve static HTML files explicitly
+// Serve HTML files explicitly
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
@@ -111,8 +119,8 @@ app.post('/logout', (req, res) => {
   });
 });
 
-// Catch-all fallback to login.html
-app.get('*', (req, res) => {
+// Catch-all fallback for non-API GET routes
+app.get(/^\/(?!api|submit|login|logout|appointments-data|check-auth).*/, (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
 
