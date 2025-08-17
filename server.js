@@ -51,8 +51,10 @@ app.post('/submit-appointment', async (req, res) => {
     console.log('Received appointment data:', d);
 
     try {
-        // Save appointmentTime as a timestamp (convert from string)
-        const appointmentTime = d.appointmentTime ? new Date(d.appointmentTime) : null;
+        // Format appointmentTime as ISO string for consistency
+        const appointmentTime = d.appointmentTime
+            ? new Date(d.appointmentTime).toISOString()
+            : null;
 
         const result = await pool.query(`
             INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
@@ -93,8 +95,6 @@ app.get('/check-auth', (req, res) => {
 // Fetch all appointments for dashboard
 app.get('/appointments', async (req, res) => {
     try {
-        // Return all appointments ordered by id descending
-        // appointmentTime is returned as ISO timestamp string by default
         const result = await pool.query('SELECT * FROM appointments ORDER BY id DESC');
         res.json(result.rows);
     } catch (err) {
@@ -107,4 +107,3 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
-
