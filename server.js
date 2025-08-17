@@ -8,7 +8,7 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3001;
 
-// PostgreSQL connection
+// PostgreSQL connection (Supabase or other)
 const pool = new Pool({
   connectionString: process.env.DATABASE_VARIABLE,
   ssl: {
@@ -20,7 +20,7 @@ const pool = new Pool({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Session configuration
+// Session configuration using PostgreSQL-backed store
 app.use(session({
   store: new pgSession({
     pool: pool,
@@ -32,24 +32,8 @@ app.use(session({
   cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
 }));
 
-// Allow specific files to be served statically
-const allowedFiles = [
-  'Login.html',
-  'Staff-Dashboard.html',
-  'Book an appointment.html',
-  'Home.html',
-  'Login.css',
-  'bg-login.png'
-];
-
-app.get('/:file', (req, res, next) => {
-  const { file } = req.params;
-  if (allowedFiles.includes(file)) {
-    res.sendFile(path.join(__dirname, file));
-  } else {
-    next();
-  }
-});
+// Serve static files
+app.use(express.static(__dirname));
 
 // Routes
 try {
@@ -61,24 +45,26 @@ try {
   // Staff Dashboard (auth required)
   app.get('/Staff-Dashboard.html', (req, res) => {
     if (!req.session.username) {
-      return res.redirect('/login.html');
+      return res.redirect('/Login.html');
     }
     res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
   });
 
   // Appointment page
-  app.get('/Book an appointment.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Book an appointment.html'));
+  app.get('/Book-an-appointment.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Book-an-appointment.html'));
   });
 
   // Submit appointment
   app.post('/submit-appointment', async (req, res) => {
     const { firstName, lastName, email, treatment, appointmentTime } = req.body;
+
     try {
       await pool.query(`
         INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
         VALUES ($1, $2, $3, $4, $5)
       `, [firstName, lastName, email, treatment, appointmentTime]);
+
       res.json({ success: true, message: 'Appointment booked successfully!' });
     } catch (err) {
       console.error(err);
@@ -86,20 +72,21 @@ try {
     }
   });
 
-  // Admin login — FIXED field name
+  // Admin login
   app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const validUser = email === 'admin@gmail.com' && password === 'admin123';
+    const { username, password } = req.body;
+
+    const validUser = username === 'admin@gmail.com' && password === 'admin123';
 
     if (validUser) {
-      req.session.username = email;
+      req.session.username = username;
       res.json({ success: true });
     } else {
       res.json({ success: false, message: 'Invalid username or password.' });
     }
   });
 
-  // Check auth status
+  // Auth status
   app.get('/check-auth', (req, res) => {
     if (req.session.username) {
       res.json({ loggedIn: true, username: req.session.username });
@@ -108,7 +95,7 @@ try {
     }
   });
 
-  // Get all appointments
+  // Get all appointments (admin only)
   app.get('/appointments-data', async (req, res) => {
     if (!req.session.username) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -125,20 +112,20 @@ try {
   // Logout
   app.post('/logout', (req, res) => {
     req.session.destroy(() => {
-      res.redirect('/login.html');
+      res.redirect('/Login.html');
     });
   });
 
-  // Catch-all route
+  // Catch-all route: redirect unknown routes to login
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Home.html'));
+    res.sendFile(path.join(__dirname, 'Login.html'));
   });
 
 } catch (err) {
   console.error('Error defining routes:', err);
 }
 
-// Auto-create appointments table
+// Auto-create appointments table if it doesn't exist
 pool.query(`
   CREATE TABLE IF NOT EXISTS appointments (
     id SERIAL PRIMARY KEY,
