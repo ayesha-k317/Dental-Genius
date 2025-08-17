@@ -42,7 +42,7 @@ try {
     res.sendFile(path.join(__dirname, 'Login.html'));
   });
 
-  // Staff Dashboard (auth required)
+  // Staff Dashboard 
   app.get('/Staff-Dashboard.html', (req, res) => {
     if (!req.session.username) {
       return res.redirect('/Login.html');
@@ -95,7 +95,7 @@ try {
     }
   });
 
-  // Get all appointments (admin only)
+  // Get all appointments 
   app.get('/appointments-data', async (req, res) => {
     if (!req.session.username) {
       return res.status(403).json({ error: 'Unauthorized' });
@@ -147,6 +147,7 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
 
 
 
