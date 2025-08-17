@@ -36,8 +36,16 @@
 
         <!-- Treatment -->
         <div class="input-box">
-          <input type="text" class="input" name="treatment" required />
-          <label class="label">Treatment</label>
+          <label class="label" for="treatment">Treatment</label>
+          <select name="treatment" id="treatment" class="input" required>
+            <option value="" disabled selected>Select a treatment</option>
+            <option value="Teeth Whitening">Teeth Whitening</option>
+            <option value="Wisdom Teeth Removal">Wisdom Teeth Removal</option>
+            <option value="Tooth Extraction">Tooth Extraction</option>
+            <option value="Fillings & Restorations">Fillings & Restorations</option>
+            <option value="Invisalign">Invisalign</option>
+            <option value="Routine Cleanings & Exams">Routine Cleanings & Exams</option>
+          </select>
         </div>
 
         <!-- Appointment time -->
@@ -52,3 +60,4 @@
   </div>
 </body>
 </html>
+
