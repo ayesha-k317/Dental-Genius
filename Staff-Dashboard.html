@@ -154,57 +154,37 @@
         });
       });
 
-      const FUTURE_APPTS = [];
-
-      function renderFuture() {
-        const tbody = document.getElementById('future-tbody');
-        const scroll = document.getElementById('future-scroll');
-        const empty = document.getElementById('future-empty');
-        if (!tbody || !empty || !scroll) return;
-        tbody.innerHTML = '';
-        if (FUTURE_APPTS.length === 0) {
-          empty.style.display = 'flex';
-          scroll.style.display = 'none';
-        } else {
-          empty.style.display = 'none';
-          scroll.style.display = 'block';
-          FUTURE_APPTS.forEach((appt, idx) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${String(idx + 1).padStart(2, '0')}</td>
-              <td>${appt.date || ''}</td>
-              <td>${appt.name || ''}</td>
-              <td>${appt.treatment || ''}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-        }
-      }
-
+      // Appointment elements
       const btnFuture = document.getElementById('btn-future');
       const btnPast = document.getElementById('btn-past');
       const futureRows = document.querySelector('#appointments .future-rows');
       const pastRows = document.querySelector('#appointments .past-rows');
 
+      // Show/hide empty states for appointments
       function updateAppointmentsEmpty() {
         const apptEmpty = document.getElementById('appointments-empty');
         const apptScroll = document.querySelector('#appointments .table-scroll');
+        if (!apptEmpty || !apptScroll || !futureRows || !pastRows) return;
         const visibleTbody = (futureRows.style.display === 'none') ? pastRows : futureRows;
         const hasRows = !!visibleTbody.querySelector('tr');
         apptEmpty.style.display = hasRows ? 'none' : 'flex';
         apptScroll.style.display = hasRows ? 'block' : 'none';
       }
 
+      // Show/hide empty states for patients
       function updatePatientsEmpty() {
         const empty = document.getElementById('patients-empty');
         const scroll = document.querySelector('#patients .table-scroll');
         const tbody = document.querySelector('#patients .patient-data');
+        if (!empty || !scroll || !tbody) return;
         const hasRows = !!tbody.querySelector('tr');
         empty.style.display = hasRows ? 'none' : 'flex';
         scroll.style.display = hasRows ? 'block' : 'none';
       }
 
+      // Show future appointments rows in Appointments tab
       function showFutureRows() {
+        if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
         futureRows.style.display = '';
         pastRows.style.display = 'none';
         btnFuture.style.background = '#111';
@@ -214,7 +194,9 @@
         updateAppointmentsEmpty();
       }
 
+      // Show past appointments rows in Appointments tab
       function showPastRows() {
+        if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
         futureRows.style.display = 'none';
         pastRows.style.display = '';
         btnFuture.style.background = '#efefef';
@@ -226,62 +208,101 @@
 
       if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
       if (btnPast) btnPast.addEventListener('click', showPastRows);
-      showFutureRows();
-      updatePatientsEmpty();
 
-      // Fetch and render data
-      fetch('/appointments')
-        .then(res => res.json())
-        .then(data => {
+      // Fetch appointments & patients data from server and render tables
+      async function fetchAndRenderAppointments() {
+        try {
+          const response = await fetch('/appointments');
+          const data = await response.json();
+
           const now = new Date();
-          const patientTbody = document.querySelector('.patient-data');
-          const uniquePatients = new Map();
-          const futureList = [];
+          const futureAppts = [];
+          const pastAppts = [];
 
-          data.forEach((appt, idx) => {
+          const patientMap = new Map();
+
+          // Clear current rows first
+          futureRows.innerHTML = '';
+          pastRows.innerHTML = '';
+
+          data.forEach((appt, index) => {
             const apptDate = new Date(appt.appointmentTime);
-            const fullName = `${appt.firstName} ${appt.lastName}`;
-            const formattedDate = apptDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+            const name = `${appt.firstName} ${appt.lastName}`;
+            const dateStr = apptDate.toLocaleString();
 
-            // Add to patients
-            if (!uniquePatients.has(appt.email)) {
-              uniquePatients.set(appt.email, true);
-              const patientTr = document.createElement('tr');
-              patientTr.innerHTML = `
-                <td>${String(uniquePatients.size).padStart(2, '0')}</td>
-                <td>${fullName}</td>
-                <td>${appt.email}</td>
-              `;
-              patientTbody.appendChild(patientTr);
-            }
-
-            const rowHtml = `
-              <tr>
-                <td>${String(idx + 1).padStart(2, '0')}</td>
-                <td>${formattedDate}</td>
-                <td>${fullName}</td>
-                <td>${appt.treatment}</td>
-              </tr>
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(index + 1).padStart(2, '0')}</td>
+              <td>${dateStr}</td>
+              <td>${name}</td>
+              <td>${appt.treatment}</td>
             `;
 
-            if (apptDate >= now) {
-              document.querySelector('.future-rows').innerHTML += rowHtml;
-              futureList.push({
-                date: formattedDate,
-                name: fullName,
-                treatment: appt.treatment
-              });
+            if (apptDate > now) {
+              futureRows.appendChild(tr);
+              futureAppts.push(appt);
             } else {
-              document.querySelector('.past-rows').innerHTML += rowHtml;
+              pastRows.appendChild(tr);
+              pastAppts.push(appt);
+            }
+
+            // Collect patients without duplicates by email
+            if (!patientMap.has(appt.email)) {
+              patientMap.set(appt.email, name);
             }
           });
 
-          FUTURE_APPTS.push(...futureList);
-          renderFuture();
+          // Fill Welcome section future appointments
+          const futureTbody = document.getElementById('future-tbody');
+          futureTbody.innerHTML = '';
+          if (futureAppts.length > 0) {
+            document.getElementById('future-empty').style.display = 'none';
+            document.getElementById('future-scroll').style.display = 'block';
+          } else {
+            document.getElementById('future-empty').style.display = 'flex';
+            document.getElementById('future-scroll').style.display = 'none';
+          }
+          futureAppts.forEach((appt, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(idx + 1).padStart(2, '0')}</td>
+              <td>${new Date(appt.appointmentTime).toLocaleString()}</td>
+              <td>${appt.firstName} ${appt.lastName}</td>
+              <td>${appt.treatment}</td>
+            `;
+            futureTbody.appendChild(tr);
+          });
+
+          // Fill Patient section
+          const patientTbody = document.querySelector('.patient-data');
+          patientTbody.innerHTML = '';
+          let patientIndex = 1;
+          for (const [email, fullName] of patientMap) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(patientIndex).padStart(2, '0')}</td>
+              <td>${fullName}</td>
+              <td>${email}</td>
+            `;
+            patientTbody.appendChild(tr);
+            patientIndex++;
+          }
+
+          // Update empty states
           updateAppointmentsEmpty();
           updatePatientsEmpty();
-        })
-        .catch(err => console.error('Error fetching appointments:', err));
+
+        } catch (err) {
+          console.error('Error loading appointments:', err);
+        }
+      }
+
+      // On page load, fetch and render data
+      fetchAndRenderAppointments();
+
+      // Default to show future appointments tab
+      showFutureRows();
+
     })();
   </script>
 </body>
