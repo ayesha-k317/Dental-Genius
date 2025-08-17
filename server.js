@@ -8,12 +8,12 @@ const app = express();
 const port = process.env.PORT || 3001;
 
 // Middleware
-app.use(express.static(__dirname)); // Serve static files (HTML, CSS, images)
-app.use(bodyParser.json()); // For JSON bodies (e.g., fetch requests)
-app.use(bodyParser.urlencoded({ extended: true })); // For form submissions
+app.use(express.static(__dirname)); // serve static files like CSS, JS, images from root
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
-    secret: 'yourSecretKey',       // Use environment variable in production
+    secret: 'yourSecretKey', // replace with env var in prod
     resave: false,
     saveUninitialized: true
 }));
@@ -23,12 +23,7 @@ const pool = new Pool({
     connectionString: 'postgresql://postgres.flqlhsdwskwexdhcbzlr:DentalGeniusClinic123!@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres'
 });
 
-// Serve Home.html at root path
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Home.html'));
-});
-
-// Create appointments table (ensure it's created if not exists)
+// Ensure appointments table exists
 pool.query(`
     CREATE TABLE IF NOT EXISTS appointments (
         id SERIAL PRIMARY KEY,
@@ -40,30 +35,42 @@ pool.query(`
     )
 `).catch(console.error);
 
-// Handle appointment submission
+// Serve Home.html at root path
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Home.html'));
+});
+
+// Serve staff dashboard page
+app.get('/staff-dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'staff-dashboard.html'));
+});
+
+// Insert appointment
 app.post('/submit-appointment', async (req, res) => {
     const d = req.body;
-    console.log('Received appointment data:', d); // Log incoming data
+    console.log('Received appointment data:', d);
 
     try {
+        // Save appointmentTime as a timestamp (convert from string)
+        const appointmentTime = d.appointmentTime ? new Date(d.appointmentTime) : null;
+
         const result = await pool.query(`
             INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
             VALUES ($1, $2, $3, $4, $5)
             RETURNING *
-        `, [d.firstName, d.lastName, d.email, d.treatment, d.appointmentTime]);
+        `, [d.firstName, d.lastName, d.email, d.treatment, appointmentTime]);
 
-        console.log('Inserted appointment:', result.rows[0]); // Confirm insertion
+        console.log('Inserted appointment:', result.rows[0]);
         res.json({ success: true, message: 'Appointment saved successfully!' });
-
     } catch (err) {
-        console.error('Error inserting appointment:', err); // Log error details
+        console.error('Error inserting appointment:', err);
         res.status(500).json({ success: false, message: 'Failed to save appointment.' });
     }
 });
 
-// Hardcoded login (for demo purposes)
+// Hardcoded login for demo
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;  
+    const { email, password } = req.body;
     const validUser = email === 'admin@gmail.com' && password === 'password123';
 
     if (validUser) {
@@ -74,7 +81,7 @@ app.post('/login', (req, res) => {
     }
 });
 
-// Check authentication
+// Check auth status
 app.get('/check-auth', (req, res) => {
     if (req.session.username) {
         res.json({ loggedIn: true, username: req.session.username });
@@ -83,9 +90,11 @@ app.get('/check-auth', (req, res) => {
     }
 });
 
-// Fetch all appointments
+// Fetch all appointments for dashboard
 app.get('/appointments', async (req, res) => {
     try {
+        // Return all appointments ordered by id descending
+        // appointmentTime is returned as ISO timestamp string by default
         const result = await pool.query('SELECT * FROM appointments ORDER BY id DESC');
         res.json(result.rows);
     } catch (err) {
@@ -98,5 +107,3 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
-
-
