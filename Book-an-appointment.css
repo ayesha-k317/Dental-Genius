@@ -117,20 +117,11 @@ body {
     transform: translate(-150%, -50%);
 }
 
-/* Static label for dropdowns */
-.static-label {
-    font-size: 14px;
-    margin-bottom: 6px;
-    display: block;
-    color: #fff;
-    font-family: 'Coco-Gothic';
-}
-
 /* Select Input Fixes */
 .select-input {
     appearance: none;
     background-color: rgba(255, 255, 255, 0.25);
-    color: #fff; /* Make the selected text white */
+    color: #000; 
     padding: 0.6rem;
     font-size: 14px;
     border-radius: 5px;
@@ -139,6 +130,7 @@ body {
     border: none;
     outline: none;
 }
+
 
 /* Button: Styling for the submit button */
 button {
@@ -161,4 +153,5 @@ button {
 button:hover {
     background: rgba(255, 255, 255, .35);
 }
+
 
