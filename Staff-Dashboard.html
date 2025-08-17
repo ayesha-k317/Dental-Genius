@@ -152,183 +152,92 @@
       </div>
   </div>
   <script>
-	(function() {
-	  const hamburger = document.getElementById('hamburger');
-	  const sidebar = document.getElementById('sidebar');
-	  const views = document.querySelectorAll('.view');
-	  const openSidebar = () => sidebar.classList.add('active');
-	  const closeSidebar = () => sidebar.classList.remove('active');
-	  const toggleSidebar = () => sidebar.classList.toggle('active');
-	
-	  hamburger.addEventListener('click', toggleSidebar);
-	
-	  sidebar.querySelectorAll('.nav-item[data-target]').forEach(link => {
-	    link.addEventListener('click', (e) => {
-	      e.preventDefault();
-	      const target = link.getAttribute('data-target');
-	      showView(target);
-	      closeSidebar();
-	    });
-	  });
-	
-	  function showView(id) {
-	    views.forEach(v => v.classList.remove('active'));
-	    const el = document.getElementById(id);
-	    if (el) el.classList.add('active');
-	  }
-	
-	  // Empty state utilities
-	  function updateAppointmentsEmpty() {
-	    const apptEmpty = document.getElementById('appointments-empty');
-	    const apptScroll = document.querySelector('#appointments .table-scroll');
-	    const visibleTbody = (futureRows.style.display === 'none') ? pastRows : futureRows;
-	    const hasRows = !!visibleTbody.querySelector('tr');
-	    apptEmpty.style.display = hasRows ? 'none' : 'flex';
-	    apptScroll.style.display = hasRows ? 'block' : 'none';
-	  }
-	
-	  function updatePatientsEmpty() {
-	    const empty = document.getElementById('patients-empty');
-	    const scroll = document.querySelector('#patients .table-scroll');
-	    const tbody = document.querySelector('#patients .patient-data');
-	    const hasRows = !!tbody.querySelector('tr');
-	    empty.style.display = hasRows ? 'none' : 'flex';
-	    scroll.style.display = hasRows ? 'block' : 'none';
-	  }
-	
-	  // Toggle buttons for Appointments tab
-	  const btnFuture = document.getElementById('btn-future');
-	  const btnPast = document.getElementById('btn-past');
+	(function () {
+	  const welcomeTbody = document.getElementById('future-tbody');
 	  const futureRows = document.querySelector('#appointments .future-rows');
 	  const pastRows = document.querySelector('#appointments .past-rows');
+	  const futureEmpty = document.getElementById('future-empty');
+	  const futureScroll = document.getElementById('future-scroll');
+	  const apptEmpty = document.getElementById('appointments-empty');
+	  const apptScroll = document.querySelector('#appointments .table-scroll');
+	  const btnFuture = document.getElementById('btn-future');
+	  const btnPast = document.getElementById('btn-past');
 	
-	  function showFutureRows() {
+	  function render(container, data, splitNames = false) {
+	    container.innerHTML = '';
+	    data.forEach((a, i) => {
+	      const tr = document.createElement('tr');
+	      tr.innerHTML = splitNames
+	        ? `
+	          <td>${String(i + 1).padStart(2, '0')}</td>
+	          <td>${new Date(a.appointmentTime).toLocaleString()}</td>
+	          <td>${a.firstName || ''}</td>
+	          <td>${a.lastName || ''}</td>
+	          <td>${a.treatment || ''}</td>
+	        `
+	        : `
+	          <td>${String(i + 1).padStart(2, '0')}</td>
+	          <td>${new Date(a.appointmentTime).toLocaleString()}</td>
+	          <td>${a.firstName || ''} ${a.lastName || ''}</td>
+	          <td>${a.treatment || ''}</td>
+	        `;
+	      container.appendChild(tr);
+	    });
+	  }
+	
+	  function toggleEmpty(container, emptyDiv, scrollDiv) {
+	    const hasRows = container.querySelectorAll('tr').length > 0;
+	    emptyDiv.style.display = hasRows ? 'none' : 'flex';
+	    scrollDiv.style.display = hasRows ? 'block' : 'none';
+	  }
+	
+	  btnFuture.addEventListener('click', () => {
 	    futureRows.style.display = '';
 	    pastRows.style.display = 'none';
 	    btnFuture.style.background = '#111';
 	    btnFuture.style.color = '#fff';
 	    btnPast.style.background = '#efefef';
 	    btnPast.style.color = '#333';
-	    updateAppointmentsEmpty();
-	  }
+	    toggleEmpty(futureRows, apptEmpty, apptScroll);
+	  });
 	
-	  function showPastRows() {
+	  btnPast.addEventListener('click', () => {
 	    futureRows.style.display = 'none';
 	    pastRows.style.display = '';
-	    btnFuture.style.background = '#efefef';
-	    btnFuture.style.color = '#333';
 	    btnPast.style.background = '#111';
 	    btnPast.style.color = '#fff';
-	    updateAppointmentsEmpty();
-	  }
+	    btnFuture.style.background = '#efefef';
+	    btnFuture.style.color = '#333';
+	    toggleEmpty(pastRows, apptEmpty, apptScroll);
+	  });
 	
-	  if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
-	  if (btnPast) btnPast.addEventListener('click', showPastRows);
-	
-	  // Default to future view
-	  showFutureRows();
-	  updatePatientsEmpty();
-	
-	  // ---------- Load appointment data ----------
-	  const FUTURE_APPTS = [];
-	
-	  function isFuture(dateStr) {
-	    const dt = new Date(dateStr);
-	    return !isNaN(dt) && dt > new Date();
-	  }
-	
-	  function isPast(dateStr) {
-	    const dt = new Date(dateStr);
-	    return !isNaN(dt) && dt < new Date();
-	  }
-	
-	  function renderFuture() {
-	    const tbody = document.getElementById('future-tbody');
-	    const scroll = document.getElementById('future-scroll');
-	    const empty = document.getElementById('future-empty');
-	    tbody.innerHTML = '';
-	    if (FUTURE_APPTS.length === 0) {
-	      empty.style.display = 'flex';
-	      scroll.style.display = 'none';
-	    } else {
-	      empty.style.display = 'none';
-	      scroll.style.display = 'block';
-	      FUTURE_APPTS.forEach((appt, idx) => {
-	        const tr = document.createElement('tr');
-	        tr.innerHTML = `
-	          <td>${String(idx + 1).padStart(2, '0')}</td>
-	          <td>${appt.date}</td>
-	          <td>${appt.name}</td>
-	          <td>${appt.treatment}</td>
-	        `;
-	        tbody.appendChild(tr);
-	      });
-	    }
-	  }
-	
-	  function renderAppointments(future, past) {
-	    const futureTbody = document.querySelector('#appointments .future-rows');
-	    const pastTbody = document.querySelector('#appointments .past-rows');
-	    futureTbody.innerHTML = '';
-	    pastTbody.innerHTML = '';
-	
-	    future.forEach((appt, idx) => {
-	      const tr = document.createElement('tr');
-	      tr.innerHTML = `
-	        <td>${String(idx + 1).padStart(2, '0')}</td>
-	        <td>${appt.date}</td>
-	        <td>${appt.name}</td>
-	        <td>${appt.treatment}</td>
-	      `;
-	      futureTbody.appendChild(tr);
-	    });
-	
-	    past.forEach((appt, idx) => {
-	      const tr = document.createElement('tr');
-	      tr.innerHTML = `
-	        <td>${String(idx + 1).padStart(2, '0')}</td>
-	        <td>${appt.date}</td>
-	        <td>${appt.name}</td>
-	        <td>${appt.treatment}</td>
-	      `;
-	      pastTbody.appendChild(tr);
-	    });
-	
-	    updateAppointmentsEmpty();
-	  }
+	  btnFuture.click();
 	
 	  async function loadAppointments() {
 	    try {
 	      const res = await fetch('/appointments');
-	      if (!res.ok) throw new Error(`Failed to fetch appointments: ${res.status}`);
+	      if (!res.ok) throw new Error(`Status ${res.status}`);
 	      const data = await res.json();
+	      const now = new Date();
 	
-	      const future = [];
-	      const past = [];
+	      const futureData = data.filter(a => !isNaN(new Date(a.appointmentTime)) && new Date(a.appointmentTime) > now);
+	      const pastData = data.filter(a => !isNaN(new Date(a.appointmentTime)) && new Date(a.appointmentTime) <= now);
 	
-	      data.forEach(appt => {
-	        const date = new Date(appt.appointmentTime);
-	        const apptObj = {
-	          date: date.toLocaleDateString(),
-	          name: `${appt.firstName} ${appt.lastName}`,
-	          treatment: appt.treatment
-	        };
-	        if (isFuture(date)) {
-	          future.push(apptObj);
-	          FUTURE_APPTS.push(apptObj); // For welcome section
-	        } else if (isPast(date)) {
-	          past.push(apptObj);
-	        }
-	      });
+	      render(welcomeTbody, futureData);                       // welcome: combined name
+	      render(futureRows, futureData, true);                   // appointments: split names
+	      render(pastRows, pastData, true);                       // appointments: split names
 	
-	      renderFuture();
-	      renderAppointments(future, past);
+	      toggleEmpty(welcomeTbody, futureEmpty, futureScroll);
+	      toggleEmpty(futureRows, apptEmpty, apptScroll);
+	      toggleEmpty(pastRows, apptEmpty, apptScroll);
 	    } catch (err) {
-	      console.error("Error loading appointments:", err);
+	      console.error('Load error:', err);
+	      const errorRow = `<tr><td colspan="5" style="text-align:center;color:red;">Error loading data</td></tr>`;
+	      welcomeTbody.innerHTML = futureRows.innerHTML = pastRows.innerHTML = errorRow;
 	    }
 	  }
 	
-	  loadAppointments();
+	  document.addEventListener('DOMContentLoaded', loadAppointments);
 	})();
 </script>
 </body>
