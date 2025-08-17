@@ -57,8 +57,42 @@
       </form>
     </div>
   </div>
+  <script>
+    document.getElementById('appointmentForm').addEventListener('submit', async function (e) {
+      e.preventDefault(); // Prevent regular form submission
+  
+      const form = e.target;
+  
+      const data = {
+        firstName: form.firstName.value,
+        lastName: form.lastName.value,
+        email: form.email.value,
+        treatment: form.treatment.value,
+        appointmentTime: form.appointmentTime.value
+      };
+  
+      const response = await fetch('/submit-appointment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+  
+      const result = await response.json();
+  
+      if (result.success) {
+        alert('✅
+              Appointment saved successfully!');
+      } else {
+        alert('❌ Failed to save appointment: ' + result.message);
+      }
+    });
+  </script>
+
 </body>
 </html>
+
 
 
 
