@@ -40,7 +40,7 @@ app.get('/Staff-Dashboard.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
 });
 
-app.get('/Book-an-appointment.html', (req, res) => {
+app.get('/Book an appointment.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'Book-an-appointment.html'));
 });
 
