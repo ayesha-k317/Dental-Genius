@@ -31,7 +31,7 @@ pool.query(`
         lastName TEXT,
         email TEXT,
         treatment TEXT,
-        appointmentTime TIMESTAMP
+        appointmentTime TEXT
     )
 `).catch(console.error);
 
@@ -107,3 +107,4 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
