@@ -76,7 +76,7 @@ try {
   app.post('/login', (req, res) => {
     const { username, password } = req.body;
 
-    const validUser = username === 'admin@example.com' && password === 'admin123';
+    const validUser = username === 'admin@gmail.com' && password === 'admin123';
 
     if (validUser) {
       req.session.username = username;
@@ -147,6 +147,7 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
 
 
 
