@@ -1,101 +1,78 @@
 <!DOCTYPE HTML>
-<html lang="en">
-<head>
+<HTML lang="en">
+<HEAD>
+    <!-- Character encoding for the document -->
     <meta charset="UTF-8">
+    
+    <!-- Ensures the page is responsive on all devices -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Link to the external CSS file for styling the page -->
     <link rel="stylesheet" href="Login.css">
+    
+    <!-- Title of the page that appears in the browser tab -->
     <title>Sign In</title>
-</head>
+</HEAD>
 
-<body>
+<BODY>
     <!-- Section for the login image -->
     <div class="Image">
-        <img src="bg-login.png" alt="Login Background">
+        <img src="bg-login.png" alt="Login Image">
     </div>
 
     <!-- Container for the login form -->
     <div class="sq-box">
+        
+        <!-- Checkbox for toggling between forms -->
         <input type="checkbox" id="toggle">
         
         <!-- Sliding panel for form display -->
         <div class="slide">
+            <!-- Form for user login -->
             <form class="form" id="loginForm">
+                
+                <!-- Title of the form, welcoming the user -->
                 <span class="title">WELCOME BACK</span>
-
-                <!-- Email input -->
+                
+                <!-- Input box for the email address -->
                 <div class="input-box">
-                    <input type="email" class="input" id="regUsername" required>
+                    <input type="email" class="input" name="email" required>
                     <label class="label">Email Address</label>
                 </div>
-
-                <!-- Password input -->
-                <div class="input-box">
-                    <input type="password" class="input" id="log2Password" required>
-                    <label class="label">Password</label>
-                    <!-- Optional password toggle icons -->
-                    <span onclick="myLogPassword()">
-                        <i id="eye-2">👁️</i>
-                        <i id="eye-slash-2" style="display:none;">🙈</i>
-                    </span>
-                </div>
-
-                <!-- Login button -->
-                <button type="submit">LOG IN</button>
                 
-                <!-- Error label -->
+                <!-- Input box for the password -->
+                <div class="input-box">
+                    <input type="password" class="input" name="password" required>
+                    <label class="label">Password</label>
+                </div>
+                
+                <!-- Submit button for logging in -->
+                <button type="submit">LOG IN</button>
                 <p id="lblMessage" style="color: red;"></p>
             </form>
         </div>
     </div>
 
     <script>
-        // Password toggle
-        function myLogPassword() {
-            const pwd = document.getElementById('log2Password');
-            const eye = document.getElementById('eye-2');
-            const eyeSlash = document.getElementById('eye-slash-2');
-            if (pwd.type === 'password') {
-                pwd.type = 'text';
-                eye.style.display = 'none';
-                eyeSlash.style.display = 'inline';
-            } else {
-                pwd.type = 'password';
-                eye.style.display = 'inline';
-                eyeSlash.style.display = 'none';
-            }
-        }
-
-        window.onload = function () {
-            const eye = document.getElementById('eye-2');
-            const eyeSlash = document.getElementById('eye-slash-2');
-            if (eye && eyeSlash) {
-                eye.style.display = 'inline';
-                eyeSlash.style.display = 'none';
-            }
-        };
-
-        // Login form handler
         document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
-            const formData = {
-                email: document.getElementById('regUsername').value,
-                password: document.getElementById('log2Password').value,
-            };
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData.entries());
 
-            const res = await fetch('/login', {
+            const response = await fetch('/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(data)
             });
 
-            const result = await res.json();
+            const result = await response.json();
             if (result.success) {
                 window.location.href = '/Staff-Dashboard.html';
             } else {
-                document.getElementById('lblMessage').textContent = result.message;
+                document.getElementById('lblMessage').textContent = 'Login failed: ' + result.message;
             }
         });
     </script>
-</body>
-</html>
+</BODY>
+</HTML>
