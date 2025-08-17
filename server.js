@@ -63,11 +63,11 @@ app.post('/submit-appointment', async (req, res) => {
 
 // Hardcoded login (for demo purposes)
 app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const validUser = username === 'admin@gmail.com' && password === 'password123';
+    const { email, password } = req.body;  
+    const validUser = email === 'admin@gmail.com' && password === 'password123';
 
     if (validUser) {
-        req.session.username = username;
+        req.session.username = email;
         res.json({ success: true });
     } else {
         res.json({ success: false, message: 'Invalid username or password.' });
@@ -98,3 +98,4 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
