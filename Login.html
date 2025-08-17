@@ -80,6 +80,15 @@
                 alert("Invalid username or password.");
             }
         });
+        (function(){
+            const form = document.getElementById('login-form');
+            if (form) {
+              form.addEventListener('submit', function(e){
+                e.preventDefault();
+                window.location.href = 'Staff-Dashboard.html';
+              });
+            }
+        })();
     </script>
 </BODY>
 </HTML>
