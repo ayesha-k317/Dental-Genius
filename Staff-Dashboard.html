@@ -1,19 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Character encoding to ensure proper character display -->
   <meta charset="UTF-8" />
-
-  <!-- Viewport meta tag to ensure responsiveness on all devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Title of the page that appears in the browser tab -->
   <title>Dental Genius - Dashboard</title>
-
-  <!-- Link to external CSS file for the dashboard page styling -->
   <link rel="stylesheet" href="Staff-Dashboard.css" />
-
-  <!-- Link to the Remix Icon font library for icons used in the page -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
 </head>
 <body>
@@ -22,6 +13,7 @@
     <span class="bar"></span>
     <span class="bar"></span>
   </div>
+
   <nav class="sidebar-nav" id="sidebar">
     <div class="nav-header">
       <img src="dg_logo2.png" alt="Dental Genius" style="width:140px;display:block;margin:0 auto 12px;" />
@@ -46,12 +38,10 @@
       <span>Logout</span>
     </a>
   </nav>
-  <!-- Main container for the dashboard content -->
+
   <div class="container">
-    <!-- Container for the fade-in effect when the dashboard is loaded -->
     <div class="container fade-in-dashboard">
 
-      <!-- Welcome section (default visible) -->
       <section id="welcome" class="view active">
         <div class="welcome-text">WELCOME</div>
         <div class="future-card" id="future-card">
@@ -70,7 +60,6 @@
             <div class="table-scroll" id="future-scroll">
               <table>
                 <tbody class="appointment-data" id="future-tbody">
-                  <!-- Future appointments inserted here -->
                 </tbody>
               </table>
             </div>
@@ -82,7 +71,6 @@
         </div>
       </section>
 
-      <!-- Section for displaying the appointments booked -->
       <section id="appointments" class="appointments view">
         <h3>Appointments Booked</h3>
         <div class="appt-filters" style="display:flex;gap:10px;margin:10px 0;justify-content:center;">
@@ -90,28 +78,21 @@
           <button id="btn-past" class="appt-filter-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;cursor:pointer;background:#efefef;color:#333;">Past Appointments</button>
         </div>
 
-        <!-- Table container for appointments list -->
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>No</th> <!-- Appointment Number -->
-                <th>Date</th> <!-- Appointment Date -->
-                <th>Name</th> <!-- Patient Name -->
-                <th>Treatment</th> <!-- Type of Treatment -->
+                <th>No</th>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Treatment</th>
               </tr>
             </thead>
           </table>
-
-          <!-- Scrollable container for the table body -->
           <div class="table-scroll">
             <table>
-              <tbody class="appointment-data future-rows">
-                <!-- Future appointments rows inserted here -->
-              </tbody>
-              <tbody class="appointment-data past-rows" style="display:none;">
-                <!-- Past appointments rows inserted here -->
-              </tbody>
+              <tbody class="appointment-data future-rows"></tbody>
+              <tbody class="appointment-data past-rows" style="display:none;"></tbody>
             </table>
           </div>
         </div>
@@ -121,28 +102,21 @@
         </div>
       </section>
 
-      <!-- Section for displaying the patient list -->
       <section id="patients" class="patient view">
         <h3>Patient List</h3>
-
-        <!-- Table container for patient data -->
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>No</th> <!-- Patient Number -->
-                <th>Name</th> <!-- Patient Name -->
-                <th>Email Address</th> <!-- Patient Email Address -->
+                <th>No</th>
+                <th>Name</th>
+                <th>Email Address</th>
               </tr>
             </thead>
           </table>
-
-          <!-- Scrollable container for the table body -->
           <div class="table-scroll">
             <table>
-              <tbody class="patient-data">
-                <!-- Patient rows inserted here -->
-              </tbody>
+              <tbody class="patient-data"></tbody>
             </table>
           </div>
         </div>
@@ -151,9 +125,9 @@
           <p class="empty-text">nothing to see</p>
         </div>
       </section>
-
     </div>
   </div>
+
   <script>
     (function() {
       const hamburger = document.getElementById('hamburger');
@@ -180,37 +154,57 @@
         });
       });
 
-      // Appointment elements
+      const FUTURE_APPTS = [];
+
+      function renderFuture() {
+        const tbody = document.getElementById('future-tbody');
+        const scroll = document.getElementById('future-scroll');
+        const empty = document.getElementById('future-empty');
+        if (!tbody || !empty || !scroll) return;
+        tbody.innerHTML = '';
+        if (FUTURE_APPTS.length === 0) {
+          empty.style.display = 'flex';
+          scroll.style.display = 'none';
+        } else {
+          empty.style.display = 'none';
+          scroll.style.display = 'block';
+          FUTURE_APPTS.forEach((appt, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(idx + 1).padStart(2, '0')}</td>
+              <td>${appt.date || ''}</td>
+              <td>${appt.name || ''}</td>
+              <td>${appt.treatment || ''}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      }
+
       const btnFuture = document.getElementById('btn-future');
       const btnPast = document.getElementById('btn-past');
       const futureRows = document.querySelector('#appointments .future-rows');
       const pastRows = document.querySelector('#appointments .past-rows');
 
-      // Show/hide empty states for appointments
       function updateAppointmentsEmpty() {
         const apptEmpty = document.getElementById('appointments-empty');
         const apptScroll = document.querySelector('#appointments .table-scroll');
-        if (!apptEmpty || !apptScroll || !futureRows || !pastRows) return;
         const visibleTbody = (futureRows.style.display === 'none') ? pastRows : futureRows;
         const hasRows = !!visibleTbody.querySelector('tr');
         apptEmpty.style.display = hasRows ? 'none' : 'flex';
         apptScroll.style.display = hasRows ? 'block' : 'none';
       }
 
-      // Show/hide empty states for patients
       function updatePatientsEmpty() {
         const empty = document.getElementById('patients-empty');
         const scroll = document.querySelector('#patients .table-scroll');
         const tbody = document.querySelector('#patients .patient-data');
-        if (!empty || !scroll || !tbody) return;
         const hasRows = !!tbody.querySelector('tr');
         empty.style.display = hasRows ? 'none' : 'flex';
         scroll.style.display = hasRows ? 'block' : 'none';
       }
 
-      // Show future appointments rows in Appointments tab
       function showFutureRows() {
-        if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
         futureRows.style.display = '';
         pastRows.style.display = 'none';
         btnFuture.style.background = '#111';
@@ -220,9 +214,7 @@
         updateAppointmentsEmpty();
       }
 
-      // Show past appointments rows in Appointments tab
       function showPastRows() {
-        if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
         futureRows.style.display = 'none';
         pastRows.style.display = '';
         btnFuture.style.background = '#efefef';
@@ -234,101 +226,62 @@
 
       if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
       if (btnPast) btnPast.addEventListener('click', showPastRows);
+      showFutureRows();
+      updatePatientsEmpty();
 
-      // Fetch appointments & patients data from server and render tables
-      async function fetchAndRenderAppointments() {
-        try {
-          const response = await fetch('/appointments');
-          const data = await response.json();
-
+      // Fetch and render data
+      fetch('/appointments')
+        .then(res => res.json())
+        .then(data => {
           const now = new Date();
-          const futureAppts = [];
-          const pastAppts = [];
-
-          const patientMap = new Map();
-
-          // Clear current rows first
-          futureRows.innerHTML = '';
-          pastRows.innerHTML = '';
-
-          data.forEach((appt, index) => {
-            const apptDate = new Date(appt.appointmentTime);
-            const name = `${appt.firstName} ${appt.lastName}`;
-            const dateStr = apptDate.toLocaleString();
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${String(index + 1).padStart(2, '0')}</td>
-              <td>${dateStr}</td>
-              <td>${name}</td>
-              <td>${appt.treatment}</td>
-            `;
-
-            if (apptDate > now) {
-              futureRows.appendChild(tr);
-              futureAppts.push(appt);
-            } else {
-              pastRows.appendChild(tr);
-              pastAppts.push(appt);
-            }
-
-            // Collect patients without duplicates by email
-            if (!patientMap.has(appt.email)) {
-              patientMap.set(appt.email, name);
-            }
-          });
-
-          // Fill Welcome section future appointments
-          const futureTbody = document.getElementById('future-tbody');
-          futureTbody.innerHTML = '';
-          if (futureAppts.length > 0) {
-            document.getElementById('future-empty').style.display = 'none';
-            document.getElementById('future-scroll').style.display = 'block';
-          } else {
-            document.getElementById('future-empty').style.display = 'flex';
-            document.getElementById('future-scroll').style.display = 'none';
-          }
-          futureAppts.forEach((appt, idx) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${String(idx + 1).padStart(2, '0')}</td>
-              <td>${new Date(appt.appointmentTime).toLocaleString()}</td>
-              <td>${appt.firstName} ${appt.lastName}</td>
-              <td>${appt.treatment}</td>
-            `;
-            futureTbody.appendChild(tr);
-          });
-
-          // Fill Patient section
           const patientTbody = document.querySelector('.patient-data');
-          patientTbody.innerHTML = '';
-          let patientIndex = 1;
-          for (const [email, fullName] of patientMap) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${String(patientIndex).padStart(2, '0')}</td>
-              <td>${fullName}</td>
-              <td>${email}</td>
-            `;
-            patientTbody.appendChild(tr);
-            patientIndex++;
-          }
+          const uniquePatients = new Map();
+          const futureList = [];
 
-          // Update empty states
+          data.forEach((appt, idx) => {
+            const apptDate = new Date(appt.appointmentTime);
+            const fullName = `${appt.firstName} ${appt.lastName}`;
+            const formattedDate = apptDate.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+
+            // Add to patients
+            if (!uniquePatients.has(appt.email)) {
+              uniquePatients.set(appt.email, true);
+              const patientTr = document.createElement('tr');
+              patientTr.innerHTML = `
+                <td>${String(uniquePatients.size).padStart(2, '0')}</td>
+                <td>${fullName}</td>
+                <td>${appt.email}</td>
+              `;
+              patientTbody.appendChild(patientTr);
+            }
+
+            const rowHtml = `
+              <tr>
+                <td>${String(idx + 1).padStart(2, '0')}</td>
+                <td>${formattedDate}</td>
+                <td>${fullName}</td>
+                <td>${appt.treatment}</td>
+              </tr>
+            `;
+
+            if (apptDate >= now) {
+              document.querySelector('.future-rows').innerHTML += rowHtml;
+              futureList.push({
+                date: formattedDate,
+                name: fullName,
+                treatment: appt.treatment
+              });
+            } else {
+              document.querySelector('.past-rows').innerHTML += rowHtml;
+            }
+          });
+
+          FUTURE_APPTS.push(...futureList);
+          renderFuture();
           updateAppointmentsEmpty();
           updatePatientsEmpty();
-
-        } catch (err) {
-          console.error('Error loading appointments:', err);
-        }
-      }
-
-      // On page load, fetch and render data
-      fetchAndRenderAppointments();
-
-      // Default to show future appointments tab
-      showFutureRows();
-
+        })
+        .catch(err => console.error('Error fetching appointments:', err));
     })();
   </script>
 </body>
