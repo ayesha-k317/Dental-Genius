@@ -1,84 +1,149 @@
-<!DOCTYPE HTML>
-<HTML Lang="en">
-<HEAD>
-    <!-- Character encoding for the document -->
-    <meta charset="UTF-8">
-    
-    <!-- Ensures the page is responsive on all devices -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    
-    <!-- Link to the external CSS file for styling the page -->
-    <link rel="stylesheet" href="Login.css">
-    
-    <!-- Title of the page that appears in the browser tab -->
-    <title>Sign In</title>
-</HEAD>
+const express = require('express');
+const bodyParser = require('body-parser');
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const { Pool } = require('pg');
+const path = require('path');
 
-<BODY>
-    <!-- Section for the login image -->
-    <div class="Image">
-        <!-- Image representing the login page, stored in assets/images -->
-        <img src="bg-login.png">
-    </div>
+const app = express();
+const port = process.env.PORT || 3001;
 
-    <!-- Container for the login form -->
-    <div class="sq-box">
-        
-        <!-- Checkbox for toggling between forms -->
-        <input type="checkbox" id="toggle">
-        
-        <!-- Sliding panel for form display -->
-        <div class="slide">
-            <!-- Form for user login -->
-            <form class="form" id="login-form" action="/login" method="POST">
-                
-                <!-- Title of the form, welcoming the user -->
-                <span class="title">WELCOME BACK</span>
-                
-                <!-- Input box for the email address -->
-                <div class="input-box">
-                    <!-- Input field for email with validation to ensure it's filled -->
-                    <input type="email" class="input" name="email" required>
-                    <!-- Label for the email input -->
-                    <label class="label">Email Address</label>
-                </div>
-                
-                <!-- Input box for the password -->
-                <div class="input-box">
-                    <!-- Input field for password with validation to ensure it's filled -->
-                    <input type="password" class="input" name="password" required>
-                    <!-- Label for the password input -->
-                    <label class="label">Password</label>
-                </div>
-                
-                <!-- Submit button for logging in -->
-                <button type="submit">LOG IN</button>
-            </form>
-        </div>
-    </div>
+// PostgreSQL connection (Supabase or other)
+const pool = new Pool({
+  connectionString: process.env.DATABASE_VARIABLE,
+  ssl: {
+    rejectUnauthorized: false
+  }
+});
 
-    <script>
-      document.getElementById('login-form').addEventListener('submit', async function (e) {
-        e.preventDefault();
-    
-        const formData = new FormData(this);
-        const data = Object.fromEntries(formData.entries());
-    
-        const response = await fetch('/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-    
-        const result = await response.json();
-        if (result.success) {
-          window.location.href = '/Staff-Dashboard.html';
-        } else {
-          alert('Login failed: ' + result.message);
-        }
-      });
-    </script>
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
+// Session configuration using PostgreSQL-backed store
+app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'session'
+  }),
+  secret: 'yourSecretKey',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+}));
 
-</BODY>
-</HTML>
+// Serve static files
+app.use(express.static(__dirname));
+
+// Routes
+try {
+  // Login page
+  app.get('/login.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Login.html'));
+  });
+
+  // Staff Dashboard (auth required)
+  app.get('/Staff-Dashboard.html', (req, res) => {
+    if (!req.session.username) {
+      return res.redirect('/Login.html');
+    }
+    res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
+  });
+
+  // Appointment page
+  app.get('/Book an appointment.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Book an appointment.html'));
+  });
+
+  // Submit appointment
+  app.post('/submit-appointment', async (req, res) => {
+    const { firstName, lastName, email, treatment, appointmentTime } = req.body;
+
+    try {
+      await pool.query(`
+        INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
+        VALUES ($1, $2, $3, $4, $5)
+      `, [firstName, lastName, email, treatment, appointmentTime]);
+
+      res.json({ success: true, message: 'Appointment booked successfully!' });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: 'Error saving appointment.' });
+    }
+  });
+
+  // login: using email instead of username
+  app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    const validUser = email === 'admin@gmail.com' && password === 'admin123';
+
+    if (validUser) {
+      req.session.username = email; // Store email in session
+      res.json({ success: true });
+    } else {
+      res.json({ success: false, message: 'Invalid username or password.' });
+    }
+  });
+
+  // Auth status
+  app.get('/check-auth', (req, res) => {
+    if (req.session.username) {
+      res.json({ loggedIn: true, username: req.session.username });
+    } else {
+      res.json({ loggedIn: false });
+    }
+  });
+
+  // Get all appointments (admin only)
+  app.get('/appointments-data', async (req, res) => {
+    if (!req.session.username) {
+      return res.status(403).json({ error: 'Unauthorized' });
+    }
+
+    try {
+      const result = await pool.query(`SELECT * FROM appointments ORDER BY appointmentTime DESC`);
+      res.json(result.rows);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  });
+
+  // Logout
+  app.post('/logout', (req, res) => {
+    req.session.destroy(() => {
+      res.redirect('/Login.html');
+    });
+  });
+
+  // Catch-all route: redirect unknown routes to home
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'Home.html'));
+  });
+
+} catch (err) {
+  console.error('Error defining routes:', err);
+}
+
+// Auto-create appointments table if it doesn't exist
+pool.query(`
+  CREATE TABLE IF NOT EXISTS appointments (
+    id SERIAL PRIMARY KEY,
+    firstName TEXT,
+    lastName TEXT,
+    email TEXT,
+    treatment TEXT,
+    appointmentTime TEXT
+  )
+`).catch(console.error);
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled error:', err);
+  res.status(500).send('Internal Server Error');
+});
+
+// Start server
+app.listen(port, () => {
+  console.log(`🚀 Server running at http://localhost:${port}`);
+});
