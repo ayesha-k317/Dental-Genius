@@ -117,15 +117,27 @@ body {
     transform: translate(-150%, -50%);
 }
 
-/* Styling for the select dropdown */
+/* Static label for dropdowns */
+.static-label {
+    font-size: 14px;
+    margin-bottom: 6px;
+    display: block;
+    color: #fff;
+    font-family: 'Coco-Gothic';
+}
+
+/* Select Input Fixes */
 .select-input {
     appearance: none;
     background-color: rgba(255, 255, 255, 0.25);
-    color: black; /* dropdown text color */
+    color: #fff; /* Make the selected text white */
     padding: 0.6rem;
     font-size: 14px;
     border-radius: 5px;
     font-family: 'Coco-Gothic';
+    width: 100%;
+    border: none;
+    outline: none;
 }
 
 /* Button: Styling for the submit button */
@@ -149,3 +161,4 @@ button {
 button:hover {
     background: rgba(255, 255, 255, .35);
 }
+
