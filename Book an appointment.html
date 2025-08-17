@@ -2,27 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="Book-an-appointment.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book an Appointment</title>
+  <link rel="stylesheet" href="Book-an-appointment.css" />
 </head>
-
 <body>
-  <!-- Background image section -->
   <div class="Image">
     <img src="bg-login.png" alt="Background Image" />
   </div>
 
-  <!-- Form container -->
   <div class="sq-box">
     <div class="slide">
       <form class="form" action="/submit-appointment" method="POST">
         <span class="title">Book an Appointment</span>
 
-        <!-- Name -->
+        <!-- First Name -->
         <div class="input-box">
-          <input type="text" class="input" name="name" required />
-          <label class="label">Name</label>
+          <input type="text" class="input" name="firstName" required />
+          <label class="label">First Name</label>
+        </div>
+
+        <!-- Last Name -->
+        <div class="input-box">
+          <input type="text" class="input" name="lastName" required />
+          <label class="label">Last Name</label>
         </div>
 
         <!-- Email -->
