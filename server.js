@@ -8,32 +8,48 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3001;
 
-// PostgreSQL connection (Supabase or other)
+// PostgreSQL connection
 const pool = new Pool({
   connectionString: process.env.DATABASE_VARIABLE,
-  ssl: { rejectUnauthorized: false }
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 // Middleware
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Session configuration using PostgreSQL-backed store
-app.use(
-  session({
-    store: new pgSession({
-      pool: pool,
-      tableName: 'session',
-    }),
-    secret: 'yourSecretKey',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }, // 30 days
-  })
-);
+// Session configuration
+app.use(session({
+  store: new pgSession({
+    pool: pool,
+    tableName: 'session'
+  }),
+  secret: 'yourSecretKey',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 } // 30 days
+}));
 
-// Serve static files
-app.use(express.static(__dirname));
+// Allow specific files to be served statically
+const allowedFiles = [
+  'Login.html',
+  'Staff-Dashboard.html',
+  'Book an appointment.html',
+  'Home.html',
+  'Login.css',
+  'bg-login.png'
+];
+
+app.get('/:file', (req, res, next) => {
+  const { file } = req.params;
+  if (allowedFiles.includes(file)) {
+    res.sendFile(path.join(__dirname, file));
+  } else {
+    next();
+  }
+});
 
 // Routes
 try {
@@ -42,10 +58,10 @@ try {
     res.sendFile(path.join(__dirname, 'Login.html'));
   });
 
-  // Staff Dashboard (protected route)
+  // Staff Dashboard (auth required)
   app.get('/Staff-Dashboard.html', (req, res) => {
     if (!req.session.username) {
-      return res.redirect('/Login.html');
+      return res.redirect('/login.html');
     }
     res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
   });
@@ -59,11 +75,10 @@ try {
   app.post('/submit-appointment', async (req, res) => {
     const { firstName, lastName, email, treatment, appointmentTime } = req.body;
     try {
-      await pool.query(
-        `INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [firstName, lastName, email, treatment, appointmentTime]
-      );
+      await pool.query(`
+        INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
+        VALUES ($1, $2, $3, $4, $5)
+      `, [firstName, lastName, email, treatment, appointmentTime]);
       res.json({ success: true, message: 'Appointment booked successfully!' });
     } catch (err) {
       console.error(err);
@@ -71,19 +86,20 @@ try {
     }
   });
 
-  // Admin login
+  // Admin login — FIXED field name
   app.post('/login', (req, res) => {
-    const { username, password } = req.body;
-    const validUser = username === 'admin@gmail.com' && password === 'admin123';
+    const { email, password } = req.body;
+    const validUser = email === 'admin@gmail.com' && password === 'admin123';
+
     if (validUser) {
-      req.session.username = username;
+      req.session.username = email;
       res.json({ success: true });
     } else {
       res.json({ success: false, message: 'Invalid username or password.' });
     }
   });
 
-  // Auth status check
+  // Check auth status
   app.get('/check-auth', (req, res) => {
     if (req.session.username) {
       res.json({ loggedIn: true, username: req.session.username });
@@ -92,11 +108,12 @@ try {
     }
   });
 
-  // Get all appointments (protected)
+  // Get all appointments
   app.get('/appointments-data', async (req, res) => {
     if (!req.session.username) {
       return res.status(403).json({ error: 'Unauthorized' });
     }
+
     try {
       const result = await pool.query(`SELECT * FROM appointments ORDER BY appointmentTime DESC`);
       res.json(result.rows);
@@ -108,29 +125,30 @@ try {
   // Logout
   app.post('/logout', (req, res) => {
     req.session.destroy(() => {
-      res.redirect('/Login.html');
+      res.redirect('/login.html');
     });
   });
 
-  // Catch-all route: serve home page
+  // Catch-all route
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'Home.html'));
   });
+
 } catch (err) {
   console.error('Error defining routes:', err);
 }
 
-// Auto-create appointments table if it doesn't exist
-pool.query(
-  `CREATE TABLE IF NOT EXISTS appointments (
+// Auto-create appointments table
+pool.query(`
+  CREATE TABLE IF NOT EXISTS appointments (
     id SERIAL PRIMARY KEY,
     firstName TEXT,
     lastName TEXT,
     email TEXT,
     treatment TEXT,
     appointmentTime TEXT
-  )`
-).catch(console.error);
+  )
+`).catch(console.error);
 
 // Global error handler
 app.use((err, req, res, next) => {
