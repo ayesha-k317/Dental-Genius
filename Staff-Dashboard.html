@@ -8,11 +8,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
 </head>
 <body>
+
+  <!-- Hamburger menu -->
   <div class="hamburger-menu" id="hamburger">
     <span class="bar"></span>
     <span class="bar"></span>
     <span class="bar"></span>
   </div>
+
+  <!-- Sidebar navigation -->
   <nav class="sidebar-nav" id="sidebar">
     <div class="nav-header">
       <img src="dg_logo2.png" alt="Dental Genius" style="width:140px;display:block;margin:0 auto 12px;" />
@@ -32,19 +36,22 @@
       <span>Patients</span>
       <i class="ri-arrow-right-s-line nav-arrow"></i>
     </a>
-    <a href="Login.html" class="nav-item nav-logout" data-action="logout">
+    <a href="Login.html" class="nav-item nav-logout">
       <i class="ri-logout-box-r-line nav-icon"></i>
       <span>Logout</span>
     </a>
   </nav>
 
+  <!-- Main content container -->
   <div class="container">
     <div class="container fade-in-dashboard">
+
+      <!-- Welcome Section -->
       <section id="welcome" class="view active">
         <div class="welcome-text">WELCOME</div>
         <div class="future-card" id="future-card">
-          <h3 style="text-align:center">Future Appointments</h3>
-          <div class="table-container">
+          <h3>Future Appointments</h3>
+          <div class="table-container" id="future-scroll">
             <table>
               <thead>
                 <tr>
@@ -55,27 +62,26 @@
                 </tr>
               </thead>
             </table>
-            <div class="table-scroll" id="future-scroll">
+            <div class="table-scroll">
               <table>
-                <tbody class="appointment-data" id="future-tbody">
-                </tbody>
+                <tbody class="appointment-data" id="future-tbody"></tbody>
               </table>
             </div>
           </div>
-          <div class="future-empty" id="future-empty">
-            <div class="ghost-emoji" style="font-size:56px;">👻</div>
+          <div class="future-empty" id="future-empty" style="display:none;">
+            <div class="ghost-emoji" aria-hidden="true">👻</div>
             <p class="empty-text">nothing to see</p>
           </div>
         </div>
       </section>
 
+      <!-- Appointments Section -->
       <section id="appointments" class="appointments view">
         <h3>Appointments Booked</h3>
-        <div class="appt-filters">
-          <button id="btn-future" class="appt-filter-btn">Future Appointments</button>
-          <button id="btn-past" class="appt-filter-btn">Past Appointments</button>
+        <div class="appt-filters" style="display:flex;gap:10px;margin:10px 0;justify-content:center;">
+          <button id="btn-future">Future Appointments</button>
+          <button id="btn-past">Past Appointments</button>
         </div>
-
         <div class="table-container">
           <table>
             <thead>
@@ -94,12 +100,13 @@
             </table>
           </div>
         </div>
-        <div class="future-empty" id="appointments-empty">
-          <div class="ghost-emoji" style="font-size:56px;">👻</div>
+        <div class="future-empty" id="appointments-empty" style="display:none;">
+          <div class="ghost-emoji" aria-hidden="true">👻</div>
           <p class="empty-text">nothing to see</p>
         </div>
       </section>
 
+      <!-- Patients Section -->
       <section id="patients" class="patient view">
         <h3>Patient List</h3>
         <div class="table-container">
@@ -118,34 +125,30 @@
             </table>
           </div>
         </div>
-        <div class="future-empty" id="patients-empty">
-          <div class="ghost-emoji" style="font-size:56px;">👻</div>
+        <div class="future-empty" id="patients-empty" style="display:none;">
+          <div class="ghost-emoji" aria-hidden="true">👻</div>
           <p class="empty-text">nothing to see</p>
         </div>
       </section>
+
     </div>
   </div>
 
+  <!-- Script -->
   <script>
     (function() {
-      const hamburger = document.getElementById('hamburger');
-      const sidebar = document.getElementById('sidebar');
       const views = document.querySelectorAll('.view');
+      const sidebar = document.getElementById('sidebar');
+      const hamburger = document.getElementById('hamburger');
 
-      function toggleSidebar() {
-        sidebar.classList.toggle('active');
-      }
-
-      function showView(id) {
+      const showView = (id) => {
         views.forEach(v => v.classList.remove('active'));
-        const view = document.getElementById(id);
-        if (view) view.classList.add('active');
-      }
+        const el = document.getElementById(id);
+        if (el) el.classList.add('active');
+      };
 
-      hamburger.addEventListener('click', toggleSidebar);
-
-      sidebar.querySelectorAll('.nav-item[data-target]').forEach(link => {
-        link.addEventListener('click', e => {
+      document.querySelectorAll('.nav-item[data-target]').forEach(link => {
+        link.addEventListener('click', (e) => {
           e.preventDefault();
           const target = link.getAttribute('data-target');
           showView(target);
@@ -153,28 +156,110 @@
         });
       });
 
-      // Tab switch for appointments
-      const btnFuture = document.getElementById('btn-future');
-      const btnPast = document.getElementById('btn-past');
-      const futureRows = document.querySelector('.future-rows');
-      const pastRows = document.querySelector('.past-rows');
-
-      btnFuture.addEventListener('click', () => {
-        futureRows.style.display = '';
-        pastRows.style.display = 'none';
-        btnFuture.classList.add('active');
-        btnPast.classList.remove('active');
+      hamburger.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
       });
 
-      btnPast.addEventListener('click', () => {
-        futureRows.style.display = 'none';
-        pastRows.style.display = '';
-        btnPast.classList.add('active');
-        btnFuture.classList.remove('active');
+      const futureAppts = []; // Replace this with real data
+      const pastAppts = [];   // Replace this with real data
+
+      const renderAppointments = () => {
+        const futureRows = document.querySelector('.future-rows');
+        const pastRows = document.querySelector('.past-rows');
+        const apptEmpty = document.getElementById('appointments-empty');
+
+        futureRows.innerHTML = '';
+        pastRows.innerHTML = '';
+
+        if (futureAppts.length === 0) apptEmpty.style.display = 'flex';
+        else apptEmpty.style.display = 'none';
+
+        futureAppts.forEach((appt, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${appt.date}</td>
+            <td>${appt.name}</td>
+            <td>${appt.treatment}</td>
+          `;
+          futureRows.appendChild(tr);
+        });
+
+        pastAppts.forEach((appt, idx) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${appt.date}</td>
+            <td>${appt.name}</td>
+            <td>${appt.treatment}</td>
+          `;
+          pastRows.appendChild(tr);
+        });
+      };
+
+      const renderFutureCard = () => {
+        const futureTbody = document.getElementById('future-tbody');
+        const futureEmpty = document.getElementById('future-empty');
+        const futureScroll = document.getElementById('future-scroll');
+
+        futureTbody.innerHTML = '';
+
+        if (futureAppts.length === 0) {
+          futureEmpty.style.display = 'flex';
+          futureScroll.style.display = 'none';
+        } else {
+          futureEmpty.style.display = 'none';
+          futureScroll.style.display = 'block';
+          futureAppts.forEach((appt, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${idx + 1}</td>
+              <td>${appt.date}</td>
+              <td>${appt.name}</td>
+              <td>${appt.treatment}</td>
+            `;
+            futureTbody.appendChild(tr);
+          });
+        }
+      };
+
+      const renderPatients = () => {
+        const tbody = document.querySelector('.patient-data');
+        const empty = document.getElementById('patients-empty');
+        tbody.innerHTML = '';
+
+        const patients = []; 
+
+        if (patients.length === 0) {
+          empty.style.display = 'flex';
+        } else {
+          empty.style.display = 'none';
+          patients.forEach((p, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${idx + 1}</td>
+              <td>${p.name}</td>
+              <td>${p.email}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+      };
+
+      document.getElementById('btn-future').addEventListener('click', () => {
+        document.querySelector('.future-rows').style.display = '';
+        document.querySelector('.past-rows').style.display = 'none';
       });
 
-      btnFuture.click(); 
+      document.getElementById('btn-past').addEventListener('click', () => {
+        document.querySelector('.future-rows').style.display = 'none';
+        document.querySelector('.past-rows').style.display = '';
+      });
 
+      // Initialize
+      renderAppointments();
+      renderFutureCard();
+      renderPatients();
     })();
   </script>
 </body>
