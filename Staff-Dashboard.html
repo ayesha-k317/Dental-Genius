@@ -130,7 +130,7 @@
             <thead>
               <tr>
                 <th>No</th> <!-- Patient Number -->
-                <th>Name</th> <!-- Patient First Name -->
+                <th>First Name</th> <!-- Patient First Name -->
                 <th>Last Name</th> <!-- Patient Last Name -->
                 <th>Email Address</th> <!-- Patient Email Address -->
               </tr>
@@ -210,7 +210,7 @@
             const apptDate = new Date(appt.appointmenttime); // Use appointmenttime from DB
             const rowHtml = `
               <td>${String(idx + 1).padStart(2, '0')}</td>
-              <td>${apptDate.toLocaleDateString()}</td>
+              <td>${apptDate.toLocaleDateString()} ${apptDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
               <td>${appt.firstname || ''}</td>
               <td>${appt.lastname || ''}</td>
               <td>${appt.treatment || ''}</td>
@@ -221,7 +221,7 @@
               const tr = document.createElement('tr');
               tr.innerHTML = `
                 <td>${String(futureCount + 1).padStart(2, '0')}</td>
-                <td>${apptDate.toLocaleDateString()}</td>
+                <td>${apptDate.toLocaleDateString()} ${apptDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
                 <td>${appt.firstname || ''} ${appt.lastname || ''}</td>
                 <td>${appt.treatment || ''}</td>
               `;
@@ -268,14 +268,27 @@
         }
       }
 
-      // Function to fetch and render patients
-      async function fetchAndRenderPatients() {
+      // Function to extract and render unique patients from appointments
+      async function extractAndRenderPatientsFromAppointments() {
         try {
-          const response = await fetch('/api/patients'); // Assuming /api/patients exists or will be created
+          const response = await fetch('/appointments'); // Fetch from the existing /appointments endpoint
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          const patients = await response.json();
+          const appointments = await response.json();
+          
+          const patientsMap = new Map();
+          appointments.forEach(appt => {
+            const email = appt.email;
+            if (email && !patientsMap.has(email)) {
+              patientsMap.set(email, {
+                firstname: appt.firstname,
+                lastname: appt.lastname,
+                email: appt.email
+              });
+            }
+          });
+          const patients = Array.from(patientsMap.values());
 
           const patientTbody = document.querySelector('#patients .patient-data');
           const patientScroll = document.querySelector('#patients .table-scroll');
@@ -314,7 +327,7 @@
 
       // Initial data fetch and render
       fetchAndRenderAppointments();
-      fetchAndRenderPatients();
+      extractAndRenderPatientsFromAppointments();
 
       // Appointments tab filter (Future/Past)
       const btnFuture = document.getElementById('btn-future');
