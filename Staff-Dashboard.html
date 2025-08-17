@@ -7,15 +7,59 @@
 
   <link rel="stylesheet" href="Staff-Dashboard.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
+  <style>
+    /* Simple navbar style */
+    nav.navbar {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-family: Arial, sans-serif;
+      margin-bottom: 20px;
+    }
+    nav.navbar .nav-logo {
+      font-weight: bold;
+      font-size: 1.3rem;
+    }
+    nav.navbar .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 20px;
+      margin: 0;
+      padding: 0;
+    }
+    nav.navbar .nav-links li a {
+      color: white;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav.navbar .nav-links li a:hover,
+    nav.navbar .nav-links li a.active {
+      color: #ffc107;
+      text-decoration: underline;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-logo">Dental Genius</div>
+    <ul class="nav-links">
+      <li><a href="/" >Home</a></li>
+      <li><a href="/Staff-Dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="#" id="logoutBtnNav" title="Logout"><i class="ri-login-box-line"></i> Logout</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main container for the dashboard content -->
   <div class="container">
     <div class="container fade-in-dashboard">
+      <div class="welcome-text">WELCOME, [NAME]</div>
 
-      <!-- Dynamic Welcome Message -->
-      <div class="welcome-text">WELCOME, <span id="username">Admin</span></div>
-
-      <!-- Appointments Section -->
       <section class="appointments">
         <h3>Appointments Booked</h3>
         <div class="table-container">
@@ -37,7 +81,6 @@
         </div>
       </section>
 
-      <!-- Patients Section -->
       <section class="patient">
         <h3>Patient List</h3>
         <div class="table-container">
@@ -58,33 +101,27 @@
         </div>
       </section>
 
-      <!-- Logout Section -->
-      <section class="Logout">
-        <div class="logout">
-          <a href="#" id="logoutBtn" title="Logout"><i class="ri-login-box-line"></i></a>
-        </div>
-      </section>
     </div>
   </div>
 
   <script>
     async function loadDashboardData() {
       try {
-        // Check if user is authenticated
+        // Check if user is authenticated first
         const authRes = await fetch('/check-auth');
         const authData = await authRes.json();
 
         if (!authData.loggedIn) {
           alert('You are not logged in.');
-          return window.location.href = '/Login.html';
+          return window.location.href = '/login.html';
         }
 
-        // Update welcome name
-        document.getElementById('username').textContent = authData.username;
+        // Set welcome name dynamically
+        document.querySelector('.welcome-text').textContent = `WELCOME, ${authData.username}`;
 
-        // Fetch appointment data from correct endpoint
+        // Fetch appointment data
         const res = await fetch('/appointments');
-        if (!res.ok) throw new Error('Failed to fetch appointments.');
+        if (!res.ok) throw new Error('Unauthorized or failed to fetch data.');
 
         const appointments = await res.json();
 
@@ -97,7 +134,7 @@
         const uniquePatients = new Map();
 
         appointments.forEach((appt, index) => {
-          // Add to Appointments Table
+          // Appointment row
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${index + 1}</td>
@@ -107,7 +144,7 @@
           `;
           appointmentTable.appendChild(row);
 
-          // Add to Patient Table (unique only)
+          // Unique patients list
           const patientKey = appt.email;
           if (!uniquePatients.has(patientKey)) {
             const pRow = document.createElement('tr');
@@ -120,24 +157,24 @@
             uniquePatients.set(patientKey, true);
           }
         });
-
       } catch (err) {
         alert('Error loading dashboard: ' + err.message);
         console.error(err);
-        window.location.href = '/Login.html';
+        window.location.href = '/login.html';
       }
     }
 
-    // Logout handler
+    // Logout handler for navbar logout link
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+      document.getElementById('logoutBtnNav').addEventListener('click', async (e) => {
         e.preventDefault();
         await fetch('/logout', { method: 'POST' });
-        window.location.href = '/Login.html';
+        window.location.href = '/login.html';
       });
 
       loadDashboardData();
     });
   </script>
+
 </body>
 </html>
