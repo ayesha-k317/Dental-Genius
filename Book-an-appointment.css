@@ -1,12 +1,12 @@
 /* Font definitions */
 @font-face {
     font-family: 'Coco-Gothic-Bold';
-    src: url(assets\fonts\CocoGothic-Bold.ttf);
+    src: url(assets/fonts/CocoGothic-Bold.ttf);
 }
 
 @font-face {
     font-family: 'Coco-Gothic';
-    src: url(assets\fonts\CocoGothic.ttf);
+    src: url(assets/fonts/CocoGothic.ttf);
 }
 
 /* Global reset: Removing margin, padding, and setting box-sizing */
@@ -68,7 +68,7 @@ body {
     font-family: 'Coco-Gothic';
 }
 
-/* Title: Styling for "WELCOME BACK" text */
+/* Title: Styling for "Book an Appointment" text */
 .title {
     font-family: 'Coco-Gothic-Bold';
     text-align: center;
@@ -106,15 +106,29 @@ body {
     padding: 0.6rem;
     font-size: 14px;
     border-radius: 5px;
+    font-family: 'Coco-Gothic';
 }
 
 /* Input Focus: Moves label when input is focused or filled */
 .input-box .input:focus + .label,
-.input-box .input:valid + .label {
+.input-box .input:valid + .label,
+.input-box select:focus + .label,
+.input-box select:valid + .label {
     transform: translate(-150%, -50%);
 }
 
-/* Button: Styling for the login button */
+/* Styling for the select dropdown */
+.select-input {
+    appearance: none;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: black; /* dropdown text color */
+    padding: 0.6rem;
+    font-size: 14px;
+    border-radius: 5px;
+    font-family: 'Coco-Gothic';
+}
+
+/* Button: Styling for the submit button */
 button {
     font-family: 'Coco-Gothic-Bold';
     letter-spacing: 0.481rem;
