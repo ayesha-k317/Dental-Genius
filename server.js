@@ -39,20 +39,20 @@ app.use(express.static(__dirname));
 try {
   // Login page
   app.get('/login.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
+    res.sendFile(path.join(__dirname, 'Login.html'));
   });
 
   // Staff Dashboard (auth required)
   app.get('/Staff-Dashboard.html', (req, res) => {
     if (!req.session.username) {
-      return res.redirect('/login.html');
+      return res.redirect('/Login.html');
     }
     res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
   });
 
   // Appointment page
   app.get('/Book an appointment.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Book-an-appointment.html'));
+    res.sendFile(path.join(__dirname, 'Book an appointment.html'));
   });
 
   // Submit appointment
@@ -112,13 +112,13 @@ try {
   // Logout
   app.post('/logout', (req, res) => {
     req.session.destroy(() => {
-      res.redirect('/login.html');
+      res.redirect('/Login.html');
     });
   });
 
   // Catch-all route: redirect unknown routes to login
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
+    res.sendFile(path.join(__dirname, 'Login.html'));
   });
 
 } catch (err) {
@@ -147,3 +147,4 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
