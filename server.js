@@ -118,7 +118,7 @@ try {
 
   // Catch-all route: redirect unknown routes to login
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'Login.html'));
+    res.sendFile(path.join(__dirname, 'Home.html'));
   });
 
 } catch (err) {
@@ -147,4 +147,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
 
