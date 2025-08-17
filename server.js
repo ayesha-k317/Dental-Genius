@@ -61,7 +61,7 @@ app.post('/submit-appointment', async (req, res) => {
 // Login (hardcoded for demo)
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const validUser = username === 'admin' && password === 'password123';
+    const validUser = username === 'admin@gmail.com' && password === 'password123';
 
     if (validUser) {
         req.session.username = username;
@@ -94,3 +94,4 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
