@@ -3,7 +3,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const { Pool } = require('pg');
 const path = require('path');
-const pgSession = require('connect-pg-simple')(session);
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -18,20 +17,18 @@ const pool = new Pool({
 
 // Middleware
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
-  store: new pgSession({
-    pool: pool,
-  }),
   secret: 'yourSecretKey',
   resave: false,
-  saveUninitialized: false,
-  cookie: {
-    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-  }
+  saveUninitialized: false
 }));
 
-// Serve HTML files explicitly
+// Serve static assets (CSS, images, etc.)
+app.use(express.static(__dirname));
+
+// Serve HTML pages
 app.get('/login.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'login.html'));
 });
@@ -43,35 +40,35 @@ app.get('/Staff-Dashboard.html', (req, res) => {
   res.sendFile(path.join(__dirname, 'Staff-Dashboard.html'));
 });
 
-// Create appointments table if it doesn't exist
+app.get('/Book-an-appointment.html', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Book-an-appointment.html'));
+});
+
+// Create appointments table (if it doesn't exist)
 pool.query(`
   CREATE TABLE IF NOT EXISTS appointments (
     id SERIAL PRIMARY KEY,
+    name TEXT,
     email TEXT,
-    firstName TEXT,
-    lastName TEXT,
-    phone TEXT,
-    appointmentTime TEXT,
-    dob TEXT,
     treatment TEXT,
-    doctor TEXT
+    appointment_time TEXT
   )
 `).catch(console.error);
 
-// POST: Submit appointment
+// POST: Handle appointment booking
 app.post('/submit-appointment', async (req, res) => {
-  const d = req.body;
+  const { name, email, treatment, appointmentTime } = req.body;
 
   try {
     await pool.query(`
-      INSERT INTO appointments (email, firstName, lastName, phone, appointmentTime, dob, treatment, doctor)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-    `, [d.email, d.firstName, d.lastName, d.phone, d.appointmentTime, d.dob, d.treatment, d.doctor]);
+      INSERT INTO appointments (name, email, treatment, appointment_time)
+      VALUES ($1, $2, $3, $4)
+    `, [name, email, treatment, appointmentTime]);
 
-    res.json({ success: true, message: 'Appointment saved successfully!' });
+    res.json({ success: true, message: 'Appointment booked successfully!' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ success: false, message: 'Failed to save appointment.' });
+    res.status(500).json({ success: false, message: 'Error saving appointment.' });
   }
 });
 
@@ -105,7 +102,7 @@ app.get('/appointments-data', async (req, res) => {
   }
 
   try {
-    const result = await pool.query('SELECT * FROM appointments ORDER BY appointmentTime DESC');
+    const result = await pool.query('SELECT * FROM appointments ORDER BY appointment_time DESC');
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -117,11 +114,6 @@ app.post('/logout', (req, res) => {
   req.session.destroy(() => {
     res.redirect('/login.html');
   });
-});
-
-// Catch-all fallback for non-API GET routes
-app.get(/^\/(?!api|submit|login|logout|appointments-data|check-auth).*/, (req, res) => {
-  res.sendFile(path.join(__dirname, 'login.html'));
 });
 
 // Start the server
