@@ -280,13 +280,13 @@ html {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    gap: 60px;
+    gap: 60px; /* Increased gap for less congestion */
 }
 
 .left-column, .right-column {
     flex: 1;
     text-align: left;
-    padding: 20px;
+    padding: 20px; /* Consistent padding for columns */
 }
 
 .left-column p, .right-column p {
@@ -304,7 +304,7 @@ html {
     height: auto;
     display: block;
     margin: 0 auto;
-    max-width: 400px;
+    max-width: 400px; /* Increase max-width for better scaling */
 }
 
 .doctors-section {
@@ -325,13 +325,13 @@ html {
 
 .doctors-grid {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: nowrap; /* Prevent wrapping to keep all in one row */
     justify-content: center;
     gap: 20px;
-    max-width: 100%;
+    max-width: 100%; /* Allow it to take full width */
     margin: 0 auto;
-    overflow-x: auto;
-    padding-bottom: 20px;
+    overflow-x: hidden; /* Remove horizontal scrollbar */
+    padding-bottom: 0; /* Remove padding for scrollbar */
 }
 
 
@@ -344,11 +344,11 @@ html {
     border: 1px solid #e0e0e0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Prevent cards from shrinking */
 }
 
 .box {
-    width: 100%;
+    width: 100%; /* Boxes within the group take full width */
 }
 
 .image-box img {
@@ -383,9 +383,9 @@ html {
     font-weight: 400;
     font-style: normal;
     text-align: justify;
-    padding: 0 10%;
-    font-size: 0.8rem;
-    line-height: 1.5;
+    padding: 0 10%; /* Adjusted padding to make text smaller */
+    font-size: 0.8rem; /* Decreased font size */
+    line-height: 1.5; /* Adjusted line-height for better spacing */
     color: #555555;
 }
 
@@ -622,7 +622,7 @@ html {
     .doctors-grid {
         flex-direction: row; /* Keep in a row on mobile, but allow scroll */
         align-items: flex-start; /* Align items to the start */
-        overflow-x: auto; /* Ensure horizontal scroll */
+        overflow-x: hidden; /* Remove horizontal scroll */
         justify-content: flex-start; /* Align to start for scrolling */
     }
 
