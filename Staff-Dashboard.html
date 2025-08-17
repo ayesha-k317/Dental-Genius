@@ -162,7 +162,7 @@
 	  const apptScroll = document.querySelector('#appointments .table-scroll');
 	  const btnFuture = document.getElementById('btn-future');
 	  const btnPast = document.getElementById('btn-past');
-	
+
 	  function render(container, data, splitNames = false) {
 	    container.innerHTML = '';
 	    data.forEach((a, i) => {
@@ -184,13 +184,13 @@
 	      container.appendChild(tr);
 	    });
 	  }
-	
+
 	  function toggleEmpty(container, emptyDiv, scrollDiv) {
 	    const hasRows = container.querySelectorAll('tr').length > 0;
 	    emptyDiv.style.display = hasRows ? 'none' : 'flex';
 	    scrollDiv.style.display = hasRows ? 'block' : 'none';
 	  }
-	
+
 	  btnFuture.addEventListener('click', () => {
 	    futureRows.style.display = '';
 	    pastRows.style.display = 'none';
@@ -200,7 +200,7 @@
 	    btnPast.style.color = '#333';
 	    toggleEmpty(futureRows, apptEmpty, apptScroll);
 	  });
-	
+
 	  btnPast.addEventListener('click', () => {
 	    futureRows.style.display = 'none';
 	    pastRows.style.display = '';
@@ -210,23 +210,30 @@
 	    btnFuture.style.color = '#333';
 	    toggleEmpty(pastRows, apptEmpty, apptScroll);
 	  });
-	
+
 	  btnFuture.click();
-	
+
 	  async function loadAppointments() {
 	    try {
 	      const res = await fetch('/appointments');
 	      if (!res.ok) throw new Error(`Status ${res.status}`);
 	      const data = await res.json();
 	      const now = new Date();
-	
-	      const futureData = data.filter(a => !isNaN(new Date(a.appointmentTime)) && new Date(a.appointmentTime) > now);
-	      const pastData = data.filter(a => !isNaN(new Date(a.appointmentTime)) && new Date(a.appointmentTime) <= now);
-	
-	      render(welcomeTbody, futureData);                       // welcome: combined name
-	      render(futureRows, futureData, true);                   // appointments: split names
-	      render(pastRows, pastData, true);                       // appointments: split names
-	
+
+	      const futureData = data.filter(a => {
+	        const appt = new Date(a.appointmentTime);
+	        return !isNaN(appt) && appt.getTime() > now.getTime();
+	      });
+
+	      const pastData = data.filter(a => {
+	        const appt = new Date(a.appointmentTime);
+	        return !isNaN(appt) && appt.getTime() <= now.getTime();
+	      });
+
+	      render(welcomeTbody, futureData);
+	      render(futureRows, futureData, true);
+	      render(pastRows, pastData, true);
+
 	      toggleEmpty(welcomeTbody, futureEmpty, futureScroll);
 	      toggleEmpty(futureRows, apptEmpty, apptScroll);
 	      toggleEmpty(pastRows, apptEmpty, apptScroll);
@@ -236,7 +243,7 @@
 	      welcomeTbody.innerHTML = futureRows.innerHTML = pastRows.innerHTML = errorRow;
 	    }
 	  }
-	
+
 	  document.addEventListener('DOMContentLoaded', loadAppointments);
 	})();
 </script>
