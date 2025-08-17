@@ -1,67 +1,51 @@
-<!DOCTYPE HTML>
-<HTML Lang="en">
-<HEAD>
-    <!-- Meta tags for character encoding and viewport settings -->
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="Book-an-appointment.css" />
+  <title>Book an Appointment</title>
+</head>
 
-    <!-- Link to the external CSS file for styling -->
-    <link rel="stylesheet" href="Book-an-appointment.css">
+<body>
+  <!-- Background image section -->
+  <div class="Image">
+    <img src="bg-login.png" alt="Background Image" />
+  </div>
 
-    <!-- Title of the webpage (appears in the browser tab) -->
-    <title>Sign In</title>
-</HEAD>
+  <!-- Form container -->
+  <div class="sq-box">
+    <div class="slide">
+      <form class="form" action="/submit-appointment" method="POST">
+        <span class="title">Book an Appointment</span>
 
-<BODY>
-    <!-- Section for the background image -->
-    <div class="Image">
-        <!-- Background image for the page (positioned behind other elements) -->
-        <img src="bg-login.png">
-    </div>
-
-    <!-- Container for the appointment booking form -->
-    <div class="sq-box">
-
-        <!-- Sliding container for the form (used for smooth transitions) -->
-        <div class="slide">
-            <!-- Main form for booking an appointment -->
-            <form class="form">
-                
-                <!-- Title of the form ("Book an appointment") -->
-                <span class="title">Book an appointment</span>
-                
-                <!-- Input box for Nmae -->
-                <div class="input-box">
-                    <input type="text" class="input" required>
-                    <!-- Label for the Name field -->
-                    <label class="label">Name</label>
-                </div>
-
-                <!-- Input box for the email address -->
-                <div class="input-box">
-                    <input type="text" class="input" required>
-                    <!-- Label for the email address field -->
-                    <label class="label">Email Address</label>
-                </div>
-
-                <!-- Input box for the type of treatment -->
-                <div class="input-box">
-                    <input type="text" class="input" required>
-                    <!-- Label for the treatment field -->
-                    <label class="label">Treatment</label>
-                </div>
-
-                <!-- Input box for the date and time of the appointment -->
-                <div class="input-box">
-                    <input type="datetime-local" class="input" required>
-                </div>
-
-                <!-- Submit button for booking the appointment -->
-                <button>Book an appointment</button>
-
-            </form>
+        <!-- Name -->
+        <div class="input-box">
+          <input type="text" class="input" name="name" required />
+          <label class="label">Name</label>
         </div>
+
+        <!-- Email -->
+        <div class="input-box">
+          <input type="email" class="input" name="email" required />
+          <label class="label">Email Address</label>
+        </div>
+
+        <!-- Treatment -->
+        <div class="input-box">
+          <input type="text" class="input" name="treatment" required />
+          <label class="label">Treatment</label>
+        </div>
+
+        <!-- Appointment time -->
+        <div class="input-box">
+          <input type="datetime-local" class="input" name="appointmentTime" required />
+        </div>
+
+        <!-- Submit -->
+        <button type="submit">Book an Appointment</button>
+      </form>
     </div>
-    
-</BODY>
-</HTML>
+  </div>
+</body>
+</html>
