@@ -4,64 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dental Genius - Dashboard</title>
-
   <link rel="stylesheet" href="Staff-Dashboard.css" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
-  <style>
-    /* Simple navbar style */
-    nav.navbar {
-      background-color: #007bff;
-      color: white;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: Arial, sans-serif;
-      margin-bottom: 20px;
-    }
-    nav.navbar .nav-logo {
-      font-weight: bold;
-      font-size: 1.3rem;
-    }
-    nav.navbar .nav-links {
-      list-style: none;
-      display: flex;
-      gap: 20px;
-      margin: 0;
-      padding: 0;
-    }
-    nav.navbar .nav-links li a {
-      color: white;
-      text-decoration: none;
-      font-weight: 600;
-      transition: color 0.3s ease;
-    }
-    nav.navbar .nav-links li a:hover,
-    nav.navbar .nav-links li a.active {
-      color: #ffc107;
-      text-decoration: underline;
-    }
-  </style>
 </head>
 <body>
-
-  <!-- Navigation Bar -->
-  <nav class="navbar">
-    <div class="nav-logo">Dental Genius</div>
-    <ul class="nav-links">
-      <li><a href="/" >Home</a></li>
-      <li><a href="/Staff-Dashboard.html" class="active">Dashboard</a></li>
-      <li><a href="#" id="logoutBtnNav" title="Logout"><i class="ri-login-box-line"></i> Logout</a></li>
-    </ul>
+  <div class="hamburger-menu" id="hamburger">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </div>
+  <nav class="sidebar-nav" id="sidebar">
+    <div class="nav-header">
+      <img src="dg_logo2.png" alt="Dental Genius" style="width:140px;display:block;margin:0 auto 12px;" />
+    </div>
+    <a href="#" class="nav-item" data-target="welcome">
+      <i class="ri-home-2-line nav-icon"></i>
+      <span>Welcome</span>
+      <i class="ri-arrow-right-s-line nav-arrow"></i>
+    </a>
+    <a href="#" class="nav-item" data-target="appointments">
+      <i class="ri-calendar-2-line nav-icon"></i>
+      <span>Appointments</span>
+      <i class="ri-arrow-right-s-line nav-arrow"></i>
+    </a>
+    <a href="#" class="nav-item" data-target="patients">
+      <i class="ri-team-line nav-icon"></i>
+      <span>Patients</span>
+      <i class="ri-arrow-right-s-line nav-arrow"></i>
+    </a>
+    <a href="Login.html" class="nav-item nav-logout" data-action="logout">
+      <i class="ri-logout-box-r-line nav-icon"></i>
+      <span>Logout</span>
+    </a>
   </nav>
 
-  <!-- Main container for the dashboard content -->
   <div class="container">
     <div class="container fade-in-dashboard">
-      <div class="welcome-text">WELCOME, [NAME]</div>
+      <section id="welcome" class="view active">
+        <div class="welcome-text">WELCOME</div>
+        <div class="future-card" id="future-card">
+          <h3 style="text-align:center">Future Appointments</h3>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Date</th>
+                  <th>Name</th>
+                  <th>Treatment</th>
+                </tr>
+              </thead>
+            </table>
+            <div class="table-scroll" id="future-scroll">
+              <table>
+                <tbody class="appointment-data" id="future-tbody">
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="future-empty" id="future-empty">
+            <div class="ghost-emoji" style="font-size:56px;">👻</div>
+            <p class="empty-text">nothing to see</p>
+          </div>
+        </div>
+      </section>
 
-      <section class="appointments">
+      <section id="appointments" class="appointments view">
         <h3>Appointments Booked</h3>
+        <div class="appt-filters">
+          <button id="btn-future" class="appt-filter-btn">Future Appointments</button>
+          <button id="btn-past" class="appt-filter-btn">Past Appointments</button>
+        </div>
+
         <div class="table-container">
           <table>
             <thead>
@@ -75,13 +89,18 @@
           </table>
           <div class="table-scroll">
             <table>
-              <tbody class="appointment-data"></tbody>
+              <tbody class="appointment-data future-rows"></tbody>
+              <tbody class="appointment-data past-rows" style="display:none;"></tbody>
             </table>
           </div>
         </div>
+        <div class="future-empty" id="appointments-empty">
+          <div class="ghost-emoji" style="font-size:56px;">👻</div>
+          <p class="empty-text">nothing to see</p>
+        </div>
       </section>
 
-      <section class="patient">
+      <section id="patients" class="patient view">
         <h3>Patient List</h3>
         <div class="table-container">
           <table>
@@ -99,82 +118,64 @@
             </table>
           </div>
         </div>
+        <div class="future-empty" id="patients-empty">
+          <div class="ghost-emoji" style="font-size:56px;">👻</div>
+          <p class="empty-text">nothing to see</p>
+        </div>
       </section>
-
     </div>
   </div>
 
   <script>
-    async function loadDashboardData() {
-      try {
-        // Check if user is authenticated first
-        const authRes = await fetch('/check-auth');
-        const authData = await authRes.json();
+    (function() {
+      const hamburger = document.getElementById('hamburger');
+      const sidebar = document.getElementById('sidebar');
+      const views = document.querySelectorAll('.view');
 
-        if (!authData.loggedIn) {
-          alert('You are not logged in.');
-          return window.location.href = '/login.html';
-        }
-
-        // Set welcome name dynamically
-        document.querySelector('.welcome-text').textContent = `WELCOME, ${authData.username}`;
-
-        // Fetch appointment data
-        const res = await fetch('/appointments');
-        if (!res.ok) throw new Error('Unauthorized or failed to fetch data.');
-
-        const appointments = await res.json();
-
-        const appointmentTable = document.querySelector('.appointment-data');
-        const patientTable = document.querySelector('.patient-data');
-
-        appointmentTable.innerHTML = '';
-        patientTable.innerHTML = '';
-
-        const uniquePatients = new Map();
-
-        appointments.forEach((appt, index) => {
-          // Appointment row
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${new Date(appt.appointmenttime).toLocaleString()}</td>
-            <td>${appt.firstname} ${appt.lastname}</td>
-            <td>${appt.treatment}</td>
-          `;
-          appointmentTable.appendChild(row);
-
-          // Unique patients list
-          const patientKey = appt.email;
-          if (!uniquePatients.has(patientKey)) {
-            const pRow = document.createElement('tr');
-            pRow.innerHTML = `
-              <td>${uniquePatients.size + 1}</td>
-              <td>${appt.firstname} ${appt.lastname}</td>
-              <td>${appt.email}</td>
-            `;
-            patientTable.appendChild(pRow);
-            uniquePatients.set(patientKey, true);
-          }
-        });
-      } catch (err) {
-        alert('Error loading dashboard: ' + err.message);
-        console.error(err);
-        window.location.href = '/login.html';
+      function toggleSidebar() {
+        sidebar.classList.toggle('active');
       }
-    }
 
-    // Logout handler for navbar logout link
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('logoutBtnNav').addEventListener('click', async (e) => {
-        e.preventDefault();
-        await fetch('/logout', { method: 'POST' });
-        window.location.href = '/login.html';
+      function showView(id) {
+        views.forEach(v => v.classList.remove('active'));
+        const view = document.getElementById(id);
+        if (view) view.classList.add('active');
+      }
+
+      hamburger.addEventListener('click', toggleSidebar);
+
+      sidebar.querySelectorAll('.nav-item[data-target]').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const target = link.getAttribute('data-target');
+          showView(target);
+          sidebar.classList.remove('active');
+        });
       });
 
-      loadDashboardData();
-    });
-  </script>
+      // Tab switch for appointments
+      const btnFuture = document.getElementById('btn-future');
+      const btnPast = document.getElementById('btn-past');
+      const futureRows = document.querySelector('.future-rows');
+      const pastRows = document.querySelector('.past-rows');
 
+      btnFuture.addEventListener('click', () => {
+        futureRows.style.display = '';
+        pastRows.style.display = 'none';
+        btnFuture.classList.add('active');
+        btnPast.classList.remove('active');
+      });
+
+      btnPast.addEventListener('click', () => {
+        futureRows.style.display = 'none';
+        pastRows.style.display = '';
+        btnPast.classList.add('active');
+        btnFuture.classList.remove('active');
+      });
+
+      btnFuture.click(); 
+
+    })();
+  </script>
 </body>
 </html>
