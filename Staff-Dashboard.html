@@ -1,100 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!-- Character encoding to ensure proper character display -->
   <meta charset="UTF-8" />
-
-  <!-- Viewport meta tag to ensure responsiveness on all devices -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Title of the page that appears in the browser tab -->
   <title>Dental Genius - Dashboard</title>
 
-  <!-- Link to external CSS file for the dashboard page styling -->
   <link rel="stylesheet" href="Staff-Dashboard.css" />
-
-  <!-- Link to the Remix Icon font library for icons used in the page -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
 </head>
 <body>
-  <!-- Main container for the dashboard content -->
   <div class="container">
-    <!-- Container for the fade-in effect when the dashboard is loaded -->
     <div class="container fade-in-dashboard">
 
-      <!-- Welcome message with dynamic user name -->
-      <div class="welcome-text">WELCOME, [NAME]</div>
+      <!-- Dynamic Welcome Message -->
+      <div class="welcome-text">WELCOME, <span id="username">[NAME]</span></div>
 
-      <!-- Section for displaying the appointments booked -->
+      <!-- Appointments Section -->
       <section class="appointments">
         <h3>Appointments Booked</h3>
-
-        <!-- Table container for appointments list -->
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>No</th> <!-- Appointment Number -->
-                <th>Date</th> <!-- Appointment Date -->
-                <th>Name</th> <!-- Patient Name -->
-                <th>Treatment</th> <!-- Type of Treatment -->
+                <th>No</th>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Treatment</th>
               </tr>
             </thead>
           </table>
-
-          <!-- Scrollable container for the table body -->
           <div class="table-scroll">
             <table>
-              <tbody class="appointment-data">
-                
-              </tbody>
+              <tbody class="appointment-data"></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- Section for displaying the patient list -->
+      <!-- Patients Section -->
       <section class="patient">
         <h3>Patient List</h3>
-
-        <!-- Table container for patient data -->
         <div class="table-container">
           <table>
             <thead>
               <tr>
-                <th>No</th> <!-- Patient Number -->
-                <th>Name</th> <!-- Patient Name -->
-                <th>Email Address</th> <!-- Patient Email Address -->
+                <th>No</th>
+                <th>Name</th>
+                <th>Email Address</th>
               </tr>
             </thead>
           </table>
-
-          <!-- Scrollable container for the table body -->
           <div class="table-scroll">
             <table>
-              <tbody class="patient-data">
-                <!-- Example of a patient row -->
-             
-              </tbody>
+              <tbody class="patient-data"></tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- Section for logout -->
+      <!-- Logout Section -->
       <section class="Logout">
-        <!-- Logout button with an icon -->
         <div class="logout">
-            <a href="#"><i class="ri-login-box-line"></i></a>
+          <a href="#" id="logoutBtn" title="Logout"><i class="ri-login-box-line"></i></a>
         </div>
       </section>
     </div>
   </div>
+
   <script>
     async function loadDashboardData() {
       try {
+        // Check if user is authenticated
+        const authRes = await fetch('/check-auth');
+        const authData = await authRes.json();
+
+        if (!authData.loggedIn) {
+          alert('You are not logged in.');
+          return window.location.href = '/Login.html';
+        }
+
+        // Update welcome name
+        document.getElementById('username').textContent = authData.username;
+
+        // Fetch appointment data
         const res = await fetch('/appointments-data');
-        if (!res.ok) throw new Error('Unauthorized or failed to fetch data.');
+        if (!res.ok) throw new Error('Failed to fetch appointments.');
 
         const appointments = await res.json();
 
@@ -107,39 +97,47 @@
         const uniquePatients = new Map();
 
         appointments.forEach((appt, index) => {
-          // Appointment row
+          // Add to Appointments Table
           const row = document.createElement('tr');
           row.innerHTML = `
             <td>${index + 1}</td>
             <td>${new Date(appt.appointmenttime).toLocaleString()}</td>
-            <td>${appt.firstName} ${appt.lastName}</td>
+            <td>${appt.firstname} ${appt.lastname}</td>
             <td>${appt.treatment}</td>
           `;
           appointmentTable.appendChild(row);
 
-          // Add to patient list if not already there
+          // Add to Patient Table (unique only)
           const patientKey = appt.email;
           if (!uniquePatients.has(patientKey)) {
             const pRow = document.createElement('tr');
             pRow.innerHTML = `
               <td>${uniquePatients.size + 1}</td>
-              <td>${appt.firstName} ${appt.lastName}</td>
+              <td>${appt.firstname} ${appt.lastname}</td>
               <td>${appt.email}</td>
             `;
             patientTable.appendChild(pRow);
             uniquePatients.set(patientKey, true);
           }
         });
+
       } catch (err) {
         alert('Error loading dashboard: ' + err.message);
         console.error(err);
-        window.location.href = '/login.html'; // Redirect if not logged in
+        window.location.href = '/Login.html';
       }
     }
 
-    // Call when page loads
-    window.onload = loadDashboardData;
-  </script>
+    // Logout handler
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('logoutBtn').addEventListener('click', async (e) => {
+        e.preventDefault();
+        await fetch('/logout', { method: 'POST' });
+        window.location.href = '/Login.html';
+      });
 
+      loadDashboardData();
+    });
+  </script>
 </body>
 </html>
