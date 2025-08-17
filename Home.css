@@ -280,13 +280,13 @@ html {
     align-items: center;
     max-width: 1200px;
     margin: 0 auto;
-    gap: 60px; /* Increased gap for less congestion */
+    gap: 60px;
 }
 
 .left-column, .right-column {
     flex: 1;
     text-align: left;
-    padding: 20px; /* Consistent padding for columns */
+    padding: 20px;
 }
 
 .left-column p, .right-column p {
@@ -304,7 +304,7 @@ html {
     height: auto;
     display: block;
     margin: 0 auto;
-    max-width: 400px; /* Increase max-width for better scaling */
+    max-width: 400px;
 }
 
 .doctors-section {
@@ -325,29 +325,26 @@ html {
 
 .doctors-grid {
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     justify-content: center;
     gap: 20px;
-    max-width: 1200px; /* Adjust as needed */
+    max-width: 100%;
     margin: 0 auto;
+    overflow-x: auto;
+    padding-bottom: 20px;
 }
 
-.doctor-pair {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-    width: 100%; /* Each pair takes full width */
-}
 
 .doctor-card-group {
     display: flex;
     flex-direction: column;
-    width: calc(25% - 20px); /* Default for larger screens */
+    min-width: 280px; /* Set a minimum width for each card */
+    width: calc(25% - 15px); /* Adjusted for 4 in a row with gap */
     background-color: #ffffff;
     border: 1px solid #e0e0e0;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
+    flex-shrink: 0;
 }
 
 .box {
@@ -387,8 +384,8 @@ html {
     font-style: normal;
     text-align: justify;
     padding: 0 10%;
-    font-size: 1.05rem;
-    line-height: 1.6;
+    font-size: 0.8rem;
+    line-height: 1.5;
     color: #555555;
 }
 
@@ -573,12 +570,10 @@ html {
     }
 
     .doctor-card-group {
+        min-width: 280px; /* Maintain minimum width on tablets */
         width: calc(50% - 20px); /* Two cards per row on tablets */
     }
 
-    .doctor-pair {
-        flex-direction: row; /* Keep pairs in a row on tablets */
-    }
 
     .footer-container {
         gap: 100px;
@@ -625,18 +620,17 @@ html {
     }
 
     .doctors-grid {
-        flex-direction: column; /* Stack doctor pairs vertically */
-        align-items: center;
+        flex-direction: row; /* Keep in a row on mobile, but allow scroll */
+        align-items: flex-start; /* Align items to the start */
+        overflow-x: auto; /* Ensure horizontal scroll */
+        justify-content: flex-start; /* Align to start for scrolling */
     }
 
-    .doctor-pair {
-        flex-direction: column; /* Stack doctor cards within a pair vertically */
-        width: 100%; /* Each pair takes full width */
-    }
 
     .doctor-card-group {
-        width: 100%; /* Ensure full width on mobile */
-        margin-bottom: 20px; /* Add space between stacked doctor cards */
+        min-width: 250px; /* Smaller minimum width for very small screens */
+        width: calc(100% - 20px); /* One card per row on mobile */
+        margin-bottom: 0; /* Remove bottom margin as they are in a row */
     }
 
     .footor-heading h1 {
@@ -666,6 +660,7 @@ html {
 /* For very small mobile devices (e.g., less than 480px) */
 @media screen and (max-width: 480px) {
     .doctor-card-group {
+        min-width: 220px; /* Even smaller minimum width for very small screens */
         width: 95%; /* Slightly smaller width for very small screens */
     }
 }
