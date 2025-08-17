@@ -151,337 +151,185 @@
 
       </div>
   </div>
-  <!DOCTYPE html>
-<html lang="en">
-<head>
-  <!-- Character encoding to ensure proper character display -->
-  <meta charset="UTF-8" />
-
-  <!-- Viewport meta tag to ensure responsiveness on all devices -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Title of the page that appears in the browser tab -->
-  <title>Dental Genius - Dashboard</title>
-
-  <!-- Link to external CSS file for the dashboard page styling -->
-  <link rel="stylesheet" href="Staff-Dashboard.css" />
-
-  <!-- Link to the Remix Icon font library for icons used in the page -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"/>
-</head>
-<body>
-  <div class="hamburger-menu" id="hamburger">
-    <span class="bar"></span>
-    <span class="bar"></span>
-    <span class="bar"></span>
-  </div>
-  <nav class="sidebar-nav" id="sidebar">
-    <div class="nav-header">
-      <img src="dg_logo2.png" alt="Dental Genius" style="width:140px;display:block;margin:0 auto 12px;" />
-    </div>
-    <a href="#" class="nav-item" data-target="welcome">
-      <i class="ri-home-2-line nav-icon"></i>
-      <span>Welcome</span>
-      <i class="ri-arrow-right-s-line nav-arrow"></i>
-    </a>
-    <a href="#" class="nav-item" data-target="appointments">
-      <i class="ri-calendar-2-line nav-icon"></i>
-      <span>Appointments</span>
-      <i class="ri-arrow-right-s-line nav-arrow"></i>
-    </a>
-        <a href="#" class="nav-item" data-target="patients">
-      <i class="ri-team-line nav-icon"></i>
-      <span>Patients</span>
-      <i class="ri-arrow-right-s-line nav-arrow"></i>
-    </a>
-    <a href="Login.html" class="nav-item nav-logout" data-action="logout">
-      <i class="ri-logout-box-r-line nav-icon"></i>
-      <span>Logout</span>
-    </a>
-  </nav>
-  <!-- Main container for the dashboard content -->
-  <div class="container">
-    <!-- Container for the fade-in effect when the dashboard is loaded -->
-    <div class="container fade-in-dashboard">
-
-      <!-- Welcome section (default visible) -->
-      <section id="welcome" class="view active">
-        <div class="welcome-text">WELCOME</div>
-        <div class="future-card" id="future-card">
-          <h3 style="text-align:center">Future Appointments</h3>
-          <div class="table-container">
-            <table>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>Date</th>
-		  <th>First Name</th>
-                  <th>Last Name</th>
-                  <th>Treatment</th>
-                </tr>
-              </thead>
-            </table>
-            <div class="table-scroll" id="future-scroll">
-              <table>
-                <tbody class="appointment-data" id="future-tbody">
-                </tbody>
-              </table>
-            </div>
-          </div>
-          <div class="future-empty" id="future-empty">
-            <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
-            <p class="empty-text">nothing to see</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Section for displaying the appointments booked -->
-      <section id="appointments" class="appointments view">
-        <h3>Appointments Booked</h3>
-        <div class="appt-filters" style="display:flex;gap:10px;margin:10px 0;justify-content:center;">
-          <button id="btn-future" class="appt-filter-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;cursor:pointer;background:#111;color:#fff;">Future Appointments</button>
-          <button id="btn-past" class="appt-filter-btn" style="padding:8px 12px;border-radius:8px;border:1px solid #ccc;cursor:pointer;background:#efefef;color:#333;">Past Appointments</button>
-        </div>
-
-        <!-- Table container for appointments list -->
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>No</th> <!-- Appointment Number -->
-                <th>Date</th> <!-- Appointment Date -->
-                <th>Name</th> <!-- Patient Name -->
-                <th>Treatment</th> <!-- Type of Treatment -->
-              </tr>
-            </thead>
-          </table>
-
-          <!-- Scrollable container for the table body -->
-          <div class="table-scroll">
-            <table>
-              <tbody class="appointment-data future-rows">
-              </tbody>
-              <tbody class="appointment-data past-rows" style="display:none;">
-              </tbody>
-            </table>
-          </div>
-        </div>
-          <div class="future-empty" id="appointments-empty">
-            <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
-            <p class="empty-text">nothing to see</p>
-          </div>
-      </section>
-
-      
-      <!-- Section for displaying the patient list -->
-      <section id="patients" class="patient view">
-        <h3>Patient List</h3>
-
-        <!-- Table container for patient data -->
-        <div class="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>No</th> <!-- Patient Number -->
-                <th>First Name</th> <!-- Patient First Name -->
-                <th>Last Name</th> <!-- Patient Last Name -->
-                <th>Email Address</th> <!-- Patient Email Address -->
-              </tr>
-            </thead>
-          </table>
-
-          <!-- Scrollable container for the table body -->
-          <div class="table-scroll">
-            <table>
-              <tbody class="patient-data">
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="future-empty" id="patients-empty">
-          <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
-          <p class="empty-text">nothing to see</p>
-        </div>
-      </section>
-
-      </div>
-  </div>
   <script>
-    (function () {
-      const hamburger = document.getElementById('hamburger');
-      const sidebar = document.getElementById('sidebar');
-      const views = document.querySelectorAll('.view');
-
-      const openSidebar = () => sidebar.classList.add('active');
-      const closeSidebar = () => sidebar.classList.remove('active');
-      const toggleSidebar = () => sidebar.classList.toggle('active');
-
-      function showView(id) {
-        views.forEach(v => v.classList.remove('active'));
-        const el = document.getElementById(id);
-        if (el) el.classList.add('active');
-      }
-
-      hamburger.addEventListener('click', toggleSidebar);
-
-      sidebar.querySelectorAll('.nav-item[data-target]').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const target = link.getAttribute('data-target');
-          showView(target);
-          closeSidebar();
-        });
-      });
-
-      // Helpers
-      function isFuture(dateStr) {
-        const now = new Date();
-        const dt = new Date(dateStr);
-        return dt > now;
-      }
-
-      function isPast(dateStr) {
-        const now = new Date();
-        const dt = new Date(dateStr);
-        return dt < now;
-      }
-
-      function updateAppointmentsEmpty() {
-        const apptEmpty = document.getElementById('appointments-empty');
-        const apptScroll = document.querySelector('#appointments .table-scroll');
-        const visibleTbody = futureRows.style.display === 'none' ? pastRows : futureRows;
-        const hasRows = visibleTbody.querySelectorAll('tr').length > 0;
-        apptEmpty.style.display = hasRows ? 'none' : 'flex';
-        apptScroll.style.display = hasRows ? 'block' : 'none';
-      }
-
-      function updatePatientsEmpty() {
-        const empty = document.getElementById('patients-empty');
-        const scroll = document.querySelector('#patients .table-scroll');
-        const tbody = document.querySelector('#patients .patient-data');
-        const hasRows = tbody.querySelectorAll('tr').length > 0;
-        empty.style.display = hasRows ? 'none' : 'flex';
-        scroll.style.display = hasRows ? 'block' : 'none';
-      }
-
-      const btnFuture = document.getElementById('btn-future');
-      const btnPast = document.getElementById('btn-past');
-      const futureRows = document.querySelector('#appointments .future-rows');
-      const pastRows = document.querySelector('#appointments .past-rows');
-
-      function showFutureRows() {
-        futureRows.style.display = '';
-        pastRows.style.display = 'none';
-        btnFuture.style.background = '#111';
-        btnFuture.style.color = '#fff';
-        btnPast.style.background = '#efefef';
-        btnPast.style.color = '#333';
-        updateAppointmentsEmpty();
-      }
-
-      function showPastRows() {
-        futureRows.style.display = 'none';
-        pastRows.style.display = '';
-        btnFuture.style.background = '#efefef';
-        btnFuture.style.color = '#333';
-        btnPast.style.background = '#111';
-        btnPast.style.color = '#fff';
-        updateAppointmentsEmpty();
-      }
-
-      if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
-      if (btnPast) btnPast.addEventListener('click', showPastRows);
-
-      // --- Fetch and load appointment data ---
-      async function loadAppointments() {
-        try {
-          const res = await fetch('/appointments');
-          const data = await res.json();
-          const now = new Date();
-
-          const futureAppts = data.filter(d => isFuture(d.appointmentTime));
-          const pastAppts = data.filter(d => isPast(d.appointmentTime));
-
-          // --- Populate Welcome Section ---
-          const futureTbody = document.getElementById('future-tbody');
-          const futureScroll = document.getElementById('future-scroll');
-          const futureEmpty = document.getElementById('future-empty');
-          futureTbody.innerHTML = '';
-
-          if (futureAppts.length === 0) {
-            futureScroll.style.display = 'none';
-            futureEmpty.style.display = 'flex';
-          } else {
-            futureScroll.style.display = 'block';
-            futureEmpty.style.display = 'none';
-            futureAppts.forEach((appt, idx) => {
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${String(idx + 1).padStart(2, '0')}</td>
-                <td>${appt.appointmentTime}</td>
-                <td>${appt.firstName}</td>
-                <td>${appt.lastName}</td>
-                <td>${appt.treatment}</td>
-              `;
-              futureTbody.appendChild(row);
-            });
-          }
-
-          // --- Populate Appointments Section ---
-          futureRows.innerHTML = '';
-          pastRows.innerHTML = '';
-
-          futureAppts.forEach((appt, idx) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${String(idx + 1).padStart(2, '0')}</td>
-              <td>${appt.appointmentTime}</td>
-              <td>${appt.firstName} ${appt.lastName}</td>
-              <td>${appt.treatment}</td>
-            `;
-            futureRows.appendChild(row);
-          });
-
-          pastAppts.forEach((appt, idx) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-              <td>${String(idx + 1).padStart(2, '0')}</td>
-              <td>${appt.appointmentTime}</td>
-              <td>${appt.firstName} ${appt.lastName}</td>
-              <td>${appt.treatment}</td>
-            `;
-            pastRows.appendChild(row);
-          });
-
-          // --- Populate Patients Section (deduplicated) ---
-          const patientTbody = document.querySelector('.patient-data');
-          const seen = new Set();
-          patientTbody.innerHTML = '';
-          data.forEach((appt, idx) => {
-            const key = `${appt.firstName}-${appt.lastName}-${appt.email}`;
-            if (!seen.has(key)) {
-              seen.add(key);
-              const row = document.createElement('tr');
-              row.innerHTML = `
-                <td>${String(seen.size).padStart(2, '0')}</td>
-                <td>${appt.firstName}</td>
-                <td>${appt.lastName}</td>
-                <td>${appt.email}</td>
-              `;
-              patientTbody.appendChild(row);
-            }
-          });
-
-          showFutureRows();
-          updatePatientsEmpty();
-        } catch (err) {
-          console.error("Error loading appointments:", err);
-        }
-      }
-
-      // --- Load everything on DOM ready ---
-      document.addEventListener('DOMContentLoaded', loadAppointments);
-    })();
-  </script>
+	(function() {
+	  const hamburger = document.getElementById('hamburger');
+	  const sidebar = document.getElementById('sidebar');
+	  const views = document.querySelectorAll('.view');
+	  const openSidebar = () => sidebar.classList.add('active');
+	  const closeSidebar = () => sidebar.classList.remove('active');
+	  const toggleSidebar = () => sidebar.classList.toggle('active');
+	
+	  hamburger.addEventListener('click', toggleSidebar);
+	
+	  sidebar.querySelectorAll('.nav-item[data-target]').forEach(link => {
+	    link.addEventListener('click', (e) => {
+	      e.preventDefault();
+	      const target = link.getAttribute('data-target');
+	      showView(target);
+	      closeSidebar();
+	    });
+	  });
+	
+	  function showView(id) {
+	    views.forEach(v => v.classList.remove('active'));
+	    const el = document.getElementById(id);
+	    if (el) el.classList.add('active');
+	  }
+	
+	  // Empty state utilities
+	  function updateAppointmentsEmpty() {
+	    const apptEmpty = document.getElementById('appointments-empty');
+	    const apptScroll = document.querySelector('#appointments .table-scroll');
+	    const visibleTbody = (futureRows.style.display === 'none') ? pastRows : futureRows;
+	    const hasRows = !!visibleTbody.querySelector('tr');
+	    apptEmpty.style.display = hasRows ? 'none' : 'flex';
+	    apptScroll.style.display = hasRows ? 'block' : 'none';
+	  }
+	
+	  function updatePatientsEmpty() {
+	    const empty = document.getElementById('patients-empty');
+	    const scroll = document.querySelector('#patients .table-scroll');
+	    const tbody = document.querySelector('#patients .patient-data');
+	    const hasRows = !!tbody.querySelector('tr');
+	    empty.style.display = hasRows ? 'none' : 'flex';
+	    scroll.style.display = hasRows ? 'block' : 'none';
+	  }
+	
+	  // Toggle buttons for Appointments tab
+	  const btnFuture = document.getElementById('btn-future');
+	  const btnPast = document.getElementById('btn-past');
+	  const futureRows = document.querySelector('#appointments .future-rows');
+	  const pastRows = document.querySelector('#appointments .past-rows');
+	
+	  function showFutureRows() {
+	    futureRows.style.display = '';
+	    pastRows.style.display = 'none';
+	    btnFuture.style.background = '#111';
+	    btnFuture.style.color = '#fff';
+	    btnPast.style.background = '#efefef';
+	    btnPast.style.color = '#333';
+	    updateAppointmentsEmpty();
+	  }
+	
+	  function showPastRows() {
+	    futureRows.style.display = 'none';
+	    pastRows.style.display = '';
+	    btnFuture.style.background = '#efefef';
+	    btnFuture.style.color = '#333';
+	    btnPast.style.background = '#111';
+	    btnPast.style.color = '#fff';
+	    updateAppointmentsEmpty();
+	  }
+	
+	  if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
+	  if (btnPast) btnPast.addEventListener('click', showPastRows);
+	
+	  // Default to future view
+	  showFutureRows();
+	  updatePatientsEmpty();
+	
+	  // ---------- Load appointment data ----------
+	  const FUTURE_APPTS = [];
+	
+	  function isFuture(dateStr) {
+	    const dt = new Date(dateStr);
+	    return !isNaN(dt) && dt > new Date();
+	  }
+	
+	  function isPast(dateStr) {
+	    const dt = new Date(dateStr);
+	    return !isNaN(dt) && dt < new Date();
+	  }
+	
+	  function renderFuture() {
+	    const tbody = document.getElementById('future-tbody');
+	    const scroll = document.getElementById('future-scroll');
+	    const empty = document.getElementById('future-empty');
+	    tbody.innerHTML = '';
+	    if (FUTURE_APPTS.length === 0) {
+	      empty.style.display = 'flex';
+	      scroll.style.display = 'none';
+	    } else {
+	      empty.style.display = 'none';
+	      scroll.style.display = 'block';
+	      FUTURE_APPTS.forEach((appt, idx) => {
+	        const tr = document.createElement('tr');
+	        tr.innerHTML = `
+	          <td>${String(idx + 1).padStart(2, '0')}</td>
+	          <td>${appt.date}</td>
+	          <td>${appt.name}</td>
+	          <td>${appt.treatment}</td>
+	        `;
+	        tbody.appendChild(tr);
+	      });
+	    }
+	  }
+	
+	  function renderAppointments(future, past) {
+	    const futureTbody = document.querySelector('#appointments .future-rows');
+	    const pastTbody = document.querySelector('#appointments .past-rows');
+	    futureTbody.innerHTML = '';
+	    pastTbody.innerHTML = '';
+	
+	    future.forEach((appt, idx) => {
+	      const tr = document.createElement('tr');
+	      tr.innerHTML = `
+	        <td>${String(idx + 1).padStart(2, '0')}</td>
+	        <td>${appt.date}</td>
+	        <td>${appt.name}</td>
+	        <td>${appt.treatment}</td>
+	      `;
+	      futureTbody.appendChild(tr);
+	    });
+	
+	    past.forEach((appt, idx) => {
+	      const tr = document.createElement('tr');
+	      tr.innerHTML = `
+	        <td>${String(idx + 1).padStart(2, '0')}</td>
+	        <td>${appt.date}</td>
+	        <td>${appt.name}</td>
+	        <td>${appt.treatment}</td>
+	      `;
+	      pastTbody.appendChild(tr);
+	    });
+	
+	    updateAppointmentsEmpty();
+	  }
+	
+	  async function loadAppointments() {
+	    try {
+	      const res = await fetch('/appointments');
+	      if (!res.ok) throw new Error(`Failed to fetch appointments: ${res.status}`);
+	      const data = await res.json();
+	
+	      const future = [];
+	      const past = [];
+	
+	      data.forEach(appt => {
+	        const date = new Date(appt.appointmentTime);
+	        const apptObj = {
+	          date: date.toLocaleDateString(),
+	          name: `${appt.firstName} ${appt.lastName}`,
+	          treatment: appt.treatment
+	        };
+	        if (isFuture(date)) {
+	          future.push(apptObj);
+	          FUTURE_APPTS.push(apptObj); // For welcome section
+	        } else if (isPast(date)) {
+	          past.push(apptObj);
+	        }
+	      });
+	
+	      renderFuture();
+	      renderAppointments(future, past);
+	    } catch (err) {
+	      console.error("Error loading appointments:", err);
+	    }
+	  }
+	
+	  loadAppointments();
+	})();
+</script>
 </body>
 </html>
