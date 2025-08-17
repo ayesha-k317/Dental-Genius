@@ -36,7 +36,7 @@
       <span>Appointments</span>
       <i class="ri-arrow-right-s-line nav-arrow"></i>
     </a>
-        <a href="#" class="nav-item" data-target="patients">
+    <a href="#" class="nav-item" data-target="patients">
       <i class="ri-team-line nav-icon"></i>
       <span>Patients</span>
       <i class="ri-arrow-right-s-line nav-arrow"></i>
@@ -70,6 +70,7 @@
             <div class="table-scroll" id="future-scroll">
               <table>
                 <tbody class="appointment-data" id="future-tbody">
+                  <!-- Future appointments inserted here -->
                 </tbody>
               </table>
             </div>
@@ -106,19 +107,20 @@
           <div class="table-scroll">
             <table>
               <tbody class="appointment-data future-rows">
+                <!-- Future appointments rows inserted here -->
               </tbody>
               <tbody class="appointment-data past-rows" style="display:none;">
+                <!-- Past appointments rows inserted here -->
               </tbody>
             </table>
           </div>
         </div>
-          <div class="future-empty" id="appointments-empty">
-            <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
-            <p class="empty-text">nothing to see</p>
-          </div>
+        <div class="future-empty" id="appointments-empty">
+          <div class="ghost-emoji" aria-hidden="true" style="font-size:56px;line-height:1;animation: floatGhost 3s ease-in-out infinite;">👻</div>
+          <p class="empty-text">nothing to see</p>
+        </div>
       </section>
 
-      
       <!-- Section for displaying the patient list -->
       <section id="patients" class="patient view">
         <h3>Patient List</h3>
@@ -139,6 +141,7 @@
           <div class="table-scroll">
             <table>
               <tbody class="patient-data">
+                <!-- Patient rows inserted here -->
               </tbody>
             </table>
           </div>
@@ -149,7 +152,7 @@
         </div>
       </section>
 
-      </div>
+    </div>
   </div>
   <script>
     (function() {
@@ -177,40 +180,13 @@
         });
       });
 
-      // Future appointments rendering (empty by default shows ghost)
-      const FUTURE_APPTS = [];
-      function renderFuture() {
-        const tbody = document.getElementById('future-tbody');
-        const scroll = document.getElementById('future-scroll');
-        const empty = document.getElementById('future-empty');
-        if (!tbody || !empty || !scroll) return;
-        tbody.innerHTML = '';
-        if (FUTURE_APPTS.length === 0) {
-          empty.style.display = 'flex';
-          scroll.style.display = 'none';
-        } else {
-          empty.style.display = 'none';
-          scroll.style.display = 'block';
-          FUTURE_APPTS.forEach((appt, idx) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${String(idx + 1).padStart(2, '0')}</td>
-              <td>${appt.date || ''}</td>
-              <td>${appt.name || ''}</td>
-              <td>${appt.treatment || ''}</td>
-            `;
-            tbody.appendChild(tr);
-          });
-        }
-      }
-      renderFuture();
-
-      // Appointments tab filter (Future/Past)
+      // Appointment elements
       const btnFuture = document.getElementById('btn-future');
       const btnPast = document.getElementById('btn-past');
       const futureRows = document.querySelector('#appointments .future-rows');
       const pastRows = document.querySelector('#appointments .past-rows');
 
+      // Show/hide empty states for appointments
       function updateAppointmentsEmpty() {
         const apptEmpty = document.getElementById('appointments-empty');
         const apptScroll = document.querySelector('#appointments .table-scroll');
@@ -221,6 +197,7 @@
         apptScroll.style.display = hasRows ? 'block' : 'none';
       }
 
+      // Show/hide empty states for patients
       function updatePatientsEmpty() {
         const empty = document.getElementById('patients-empty');
         const scroll = document.querySelector('#patients .table-scroll');
@@ -231,6 +208,7 @@
         scroll.style.display = hasRows ? 'block' : 'none';
       }
 
+      // Show future appointments rows in Appointments tab
       function showFutureRows() {
         if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
         futureRows.style.display = '';
@@ -241,6 +219,8 @@
         btnPast.style.color = '#333';
         updateAppointmentsEmpty();
       }
+
+      // Show past appointments rows in Appointments tab
       function showPastRows() {
         if (!futureRows || !pastRows || !btnFuture || !btnPast) return;
         futureRows.style.display = 'none';
@@ -251,97 +231,105 @@
         btnPast.style.color = '#fff';
         updateAppointmentsEmpty();
       }
+
       if (btnFuture) btnFuture.addEventListener('click', showFutureRows);
       if (btnPast) btnPast.addEventListener('click', showPastRows);
-      // Default to show future
-      showFutureRows();
-      updatePatientsEmpty();
-    })();
-    // Fetch appointments from the server and render them
-async function fetchAndRenderAppointments() {
-  try {
-    const response = await fetch('/appointments');
-    const data = await response.json();
 
-    const now = new Date();
-    const futureAppts = [];
-    const pastAppts = [];
+      // Fetch appointments & patients data from server and render tables
+      async function fetchAndRenderAppointments() {
+        try {
+          const response = await fetch('/appointments');
+          const data = await response.json();
 
-    const patientMap = new Map();
+          const now = new Date();
+          const futureAppts = [];
+          const pastAppts = [];
 
-    data.forEach((appt, index) => {
-      const apptDate = new Date(appt.appointmentTime);
-      const name = `${appt.firstName} ${appt.lastName}`;
-      const dateStr = apptDate.toLocaleString(); // or apptDate.toDateString()
+          const patientMap = new Map();
 
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${String(index + 1).padStart(2, '0')}</td>
-        <td>${dateStr}</td>
-        <td>${name}</td>
-        <td>${appt.treatment}</td>
-      `;
+          // Clear current rows first
+          futureRows.innerHTML = '';
+          pastRows.innerHTML = '';
 
-      if (apptDate > now) {
-        document.querySelector('.future-rows').appendChild(tr);
-        futureAppts.push(appt);
-      } else {
-        document.querySelector('.past-rows').appendChild(tr);
-        pastAppts.push(appt);
-      }
+          data.forEach((appt, index) => {
+            const apptDate = new Date(appt.appointmentTime);
+            const name = `${appt.firstName} ${appt.lastName}`;
+            const dateStr = apptDate.toLocaleString();
 
-      // For patient list - avoid duplicates
-      if (!patientMap.has(appt.email)) {
-        patientMap.set(appt.email, name);
-      }
-    });
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(index + 1).padStart(2, '0')}</td>
+              <td>${dateStr}</td>
+              <td>${name}</td>
+              <td>${appt.treatment}</td>
+            `;
 
-    // Fill Welcome section future appointments
-    const futureTbody = document.getElementById('future-tbody');
-    futureTbody.innerHTML = '';
-    if (futureAppts.length > 0) {
-      document.getElementById('future-empty').style.display = 'none';
-      document.getElementById('future-scroll').style.display = 'block';
-    } else {
-      document.getElementById('future-empty').style.display = 'flex';
-      document.getElementById('future-scroll').style.display = 'none';
-    }
-    futureAppts.forEach((appt, idx) => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${String(idx + 1).padStart(2, '0')}</td>
-        <td>${new Date(appt.appointmentTime).toLocaleString()}</td>
-        <td>${appt.firstName} ${appt.lastName}</td>
-        <td>${appt.treatment}</td>
-      `;
-      futureTbody.appendChild(tr);
-    });
+            if (apptDate > now) {
+              futureRows.appendChild(tr);
+              futureAppts.push(appt);
+            } else {
+              pastRows.appendChild(tr);
+              pastAppts.push(appt);
+            }
 
-    // Fill Patient section
-    const patientTbody = document.querySelector('.patient-data');
-        patientTbody.innerHTML = '';
-        let patientIndex = 1;
-        for (const [email, fullName] of patientMap) {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${String(patientIndex).padStart(2, '0')}</td>
-            <td>${fullName}</td>
-            <td>${email}</td>
-          `;
-          patientTbody.appendChild(tr);
-          patientIndex++;
+            // Collect patients without duplicates by email
+            if (!patientMap.has(appt.email)) {
+              patientMap.set(appt.email, name);
+            }
+          });
+
+          // Fill Welcome section future appointments
+          const futureTbody = document.getElementById('future-tbody');
+          futureTbody.innerHTML = '';
+          if (futureAppts.length > 0) {
+            document.getElementById('future-empty').style.display = 'none';
+            document.getElementById('future-scroll').style.display = 'block';
+          } else {
+            document.getElementById('future-empty').style.display = 'flex';
+            document.getElementById('future-scroll').style.display = 'none';
+          }
+          futureAppts.forEach((appt, idx) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(idx + 1).padStart(2, '0')}</td>
+              <td>${new Date(appt.appointmentTime).toLocaleString()}</td>
+              <td>${appt.firstName} ${appt.lastName}</td>
+              <td>${appt.treatment}</td>
+            `;
+            futureTbody.appendChild(tr);
+          });
+
+          // Fill Patient section
+          const patientTbody = document.querySelector('.patient-data');
+          patientTbody.innerHTML = '';
+          let patientIndex = 1;
+          for (const [email, fullName] of patientMap) {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${String(patientIndex).padStart(2, '0')}</td>
+              <td>${fullName}</td>
+              <td>${email}</td>
+            `;
+            patientTbody.appendChild(tr);
+            patientIndex++;
+          }
+
+          // Update empty states
+          updateAppointmentsEmpty();
+          updatePatientsEmpty();
+
+        } catch (err) {
+          console.error('Error loading appointments:', err);
         }
-    
-        updateAppointmentsEmpty();
-        updatePatientsEmpty();
-    
-      } catch (err) {
-        console.error('Error loading appointments:', err);
       }
-    }
 
-    // Call this on load
-    fetchAndRenderAppointments();
+      // On page load, fetch and render data
+      fetchAndRenderAppointments();
+
+      // Default to show future appointments tab
+      showFutureRows();
+
+    })();
   </script>
 </body>
 </html>
