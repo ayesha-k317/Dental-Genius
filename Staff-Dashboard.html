@@ -4,165 +4,96 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Staff Dashboard</title>
-  <link rel="stylesheet" href="StaffDashboard.css" /> <!-- your CSS -->
+  <link rel="stylesheet" href="your-css-file.css" />
+  <style>
+    /* You can also paste your entire CSS here if no external file */
+  </style>
 </head>
 <body>
-  <div class="dashboard-container">
 
-    <h1>Staff Dashboard</h1>
-
-    <div class="btn-group">
-      <button id="btn-future" class="active">Future Appointments</button>
-      <button id="btn-past">Past Appointments</button>
-    </div>
-
-    <section id="appointments-section">
-      <h2>Appointments</h2>
-      <p id="appointments-empty" style="display:none;">No appointments to display.</p>
-      <table class="appointments-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Date & Time</th>
-            <th>Patient Name</th>
-            <th>Treatment</th>
-          </tr>
-        </thead>
-        <tbody class="future-rows"></tbody>
-        <tbody class="past-rows" style="display:none;"></tbody>
-      </table>
-    </section>
-
-    <section id="patients-section">
-      <h2>Patients</h2>
-      <p id="patients-empty" style="display:none;">No patients found.</p>
-      <table class="patients-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Name</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody class="patient-data"></tbody>
-      </table>
-    </section>
-
+  <!-- Sidebar and hamburger menu markup based on your CSS (simplified) -->
+  <div class="hamburger-menu" id="hamburgerMenu">
+    <div class="bar"></div>
+    <div class="bar"></div>
+    <div class="bar"></div>
   </div>
 
+  <nav class="sidebar-nav" id="sidebarNav">
+    <a href="#" class="nav-item active">Dashboard</a>
+    <a href="#" class="nav-item">Appointments</a>
+    <a href="#" class="nav-item nav-logout">Logout</a>
+  </nav>
+
+  <main class="container">
+    <h1 class="welcome-text">Staff Dashboard</h1>
+
+    <section class="appointment-section">
+      <h2>All Appointments</h2>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Treatment</th>
+              <th>Appointment Time</th>
+            </tr>
+          </thead>
+          <tbody id="appointmentsTableBody" class="appointment-data">
+            <!-- Data rows will be injected here -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
   <script>
-    (() => {
-      const btnFuture = document.getElementById('btn-future');
-      const btnPast = document.getElementById('btn-past');
-      const futureRows = document.querySelector('.future-rows');
-      const pastRows = document.querySelector('.past-rows');
-      const appointmentsEmpty = document.getElementById('appointments-empty');
-      const patientsEmpty = document.getElementById('patients-empty');
-      const patientTbody = document.querySelector('.patient-data');
+    // Sidebar toggle logic
+    const hamburgerMenu = document.getElementById('hamburgerMenu');
+    const sidebarNav = document.getElementById('sidebarNav');
+    hamburgerMenu.addEventListener('click', () => {
+      sidebarNav.classList.toggle('active');
+    });
 
-      function formatName(firstName, lastName) {
-        if (firstName && lastName) return firstName + ' ' + lastName;
-        if (firstName) return firstName;
-        if (lastName) return lastName;
-        return 'No Name';
+    // Fetch and render appointments
+    async function loadAppointments() {
+      try {
+        const response = await fetch('/appointments');
+        const data = await response.json();
+
+        const tbody = document.getElementById('appointmentsTableBody');
+        tbody.innerHTML = ''; // Clear existing rows
+
+        data.forEach(appt => {
+          // Safely parse date
+          const apptDate = new Date(appt.appointmentTime);
+          const validDate = !isNaN(apptDate.getTime());
+          const dateStr = validDate ? apptDate.toLocaleString() : 'Invalid Date';
+
+          // Combine full name safely
+          const fullName = `${appt.firstName || ''} ${appt.lastName || ''}`.trim() || 'No Name';
+
+          const row = document.createElement('tr');
+
+          row.innerHTML = `
+            <td>${fullName}</td>
+            <td>${appt.email || 'No Email'}</td>
+            <td>${appt.treatment || 'No Treatment'}</td>
+            <td>${dateStr}</td>
+          `;
+
+          tbody.appendChild(row);
+        });
+      } catch (error) {
+        console.error('Error loading appointments:', error);
       }
+    }
 
-      function toggleButtons(showFuture) {
-        if (showFuture) {
-          btnFuture.classList.add('active');
-          btnPast.classList.remove('active');
-          futureRows.style.display = '';
-          pastRows.style.display = 'none';
-        } else {
-          btnFuture.classList.remove('active');
-          btnPast.classList.add('active');
-          futureRows.style.display = 'none';
-          pastRows.style.display = '';
-        }
-        updateAppointmentsEmpty();
-      }
+    // Initial load
+    loadAppointments();
 
-      function updateAppointmentsEmpty() {
-        const visibleTbody = futureRows.style.display !== 'none' ? futureRows : pastRows;
-        const hasRows = visibleTbody.children.length > 0;
-        appointmentsEmpty.style.display = hasRows ? 'none' : 'block';
-      }
-
-      function updatePatientsEmpty() {
-        const hasPatients = patientTbody.children.length > 0;
-        patientsEmpty.style.display = hasPatients ? 'none' : 'block';
-      }
-
-      btnFuture.addEventListener('click', () => toggleButtons(true));
-      btnPast.addEventListener('click', () => toggleButtons(false));
-
-      async function fetchAppointments() {
-        try {
-          const res = await fetch('/appointments');
-          const data = await res.json();
-
-          const now = new Date();
-
-          futureRows.innerHTML = '';
-          pastRows.innerHTML = '';
-          patientTbody.innerHTML = '';
-
-          const patientsMap = new Map();
-
-          data.forEach((appt, idx) => {
-            const apptDate = new Date(appt.appointmentTime);
-            const validDate = !isNaN(apptDate.getTime());
-
-            const dateStr = validDate ? apptDate.toLocaleString() : 'Invalid Date';
-
-            const fullName = formatName(appt.firstName, appt.lastName);
-
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${idx + 1}</td>
-              <td>${dateStr}</td>
-              <td>${fullName}</td>
-              <td>${appt.treatment || 'N/A'}</td>
-            `;
-
-            if (validDate && apptDate > now) {
-              futureRows.appendChild(tr);
-            } else {
-              pastRows.appendChild(tr);
-            }
-
-            if (appt.email && !patientsMap.has(appt.email)) {
-              patientsMap.set(appt.email, fullName);
-            }
-          });
-
-          let patientIndex = 1;
-          for (const [email, name] of patientsMap) {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-              <td>${patientIndex++}</td>
-              <td>${name}</td>
-              <td>${email}</td>
-            `;
-            patientTbody.appendChild(tr);
-          }
-
-          updateAppointmentsEmpty();
-          updatePatientsEmpty();
-
-          toggleButtons(true); // default show future
-
-        } catch (err) {
-          console.error('Failed to fetch appointments:', err);
-          appointmentsEmpty.textContent = 'Error loading appointments.';
-          appointmentsEmpty.style.display = 'block';
-          patientsEmpty.textContent = 'Error loading patients.';
-          patientsEmpty.style.display = 'block';
-        }
-      }
-
-      fetchAppointments();
-    })();
+    setInterval(loadAppointments, 60000);
   </script>
 </body>
 </html>
