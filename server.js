@@ -30,14 +30,11 @@ app.get('/', (req, res) => {
 pool.query(`
     CREATE TABLE IF NOT EXISTS appointments (
         id SERIAL PRIMARY KEY,
-        email TEXT,
         firstName TEXT,
         lastName TEXT,
-        phone TEXT,
-        appointmentTime TEXT,
-        dob TEXT,
+        email TEXT,
         treatment TEXT,
-        doctor TEXT
+        appointmentTime TEXT,
     )
 `).catch(console.error);
 
@@ -47,9 +44,9 @@ app.post('/submit-appointment', async (req, res) => {
 
     try {
         await pool.query(`
-            INSERT INTO appointments (email, firstName, lastName, phone, appointmentTime, dob, treatment, doctor)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
-        `, [d.email, d.firstName, d.lastName, d.phone, d.appointmentTime, d.dob, d.treatment, d.doctor]);
+          INSERT INTO appointments (firstName, lastName, email, treatment, appointmentTime)
+          VALUES ($1, $2, $3, $4, $5)
+        `, [d.firstName, d.lastName, d.email, d.treatment, d.appointmentTime]);
 
         res.json({ success: true, message: 'Appointment saved successfully!' });
     } catch (err) {
@@ -94,4 +91,5 @@ app.get('/appointments', async (req, res) => {
 app.listen(port, () => {
     console.log(`🚀 Server running at http://localhost:${port}`);
 });
+
 
