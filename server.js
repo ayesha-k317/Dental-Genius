@@ -51,7 +51,7 @@ try {
   });
 
   // Appointment page
-  app.get('/Book-an-appointment.html', (req, res) => {
+  app.get('/Book an appointment.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'Book-an-appointment.html'));
   });
 
