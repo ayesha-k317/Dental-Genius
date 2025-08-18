@@ -35,7 +35,7 @@
   padding: 10px;
   width: 40px;
   height: 40px;
-  display: none; /* Hidden by default */
+  display: none;
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -53,7 +53,7 @@
 .sidebar-nav {
   position: fixed;
   top: 0;
-  right: 0; /* was left: 0; */
+  right: -260px;
   left: auto;
   height: 100vh;
   width: 240px;
@@ -64,15 +64,11 @@
   gap: 8px;
   z-index: 999;
   transition: right 0.3s ease;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.2); /* Add shadow for better visibility */
-}
-
-.sidebar-nav:not(.active) {
-  right: -260px; /* hide it off screen to the right */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
 }
 
 .sidebar-nav.active {
-  right: 0;
+  right: 0; /* Show when active on mobile */
 }
 
 .nav-item {
@@ -122,21 +118,70 @@
   margin-left: 2px;
 }
 
-@media (max-width: 768px) { /* Changed breakpoint to 768px for consistency */
+@media (min-width: 769px) {
   .hamburger-menu {
-    display: flex; /* Show hamburger menu on smaller screens */
+    display: flex;
   }
 
   .sidebar-nav {
-    width: min(80vw, 280px); /* Adjust width for mobile, max 280px or 80vw */
-    height: 100vh; /* Keep full height */
-    position: fixed; /* Keep fixed for sliding effect */
-    padding-top: 80px; /* Adjust padding for mobile */
+    position: fixed;
+    top: 0;
+    right: -260px;
+    left: auto;
+    height: 100vh;
+    width: 240px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    padding-top: 80px;
+    gap: 8px;
+    z-index: 999;
+    transition: right 0.3s ease;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+  }
+
+  .sidebar-nav.active {
+    right: 0;
+  }
+
+  .nav-item {
+    padding: 10px 15px;
+    margin: 0;
+  }
+
+  .nav-icon {
+    margin-right: 8px;
+  }
+
+  .nav-arrow {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger-menu {
+    display: flex;
+  }
+
+  .sidebar-nav {
+    width: min(80vw, 280px);
+    height: 100vh;
+    position: fixed;
+    padding-top: 80px;
+    transition: right 0.3s ease;
+    flex-direction: column;
+    justify-content: flex-start;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
   }
 
   .nav-item {
     padding: 14px 18px;
     font-size: 1rem;
+    margin: 0 12px;
+  }
+
+  .nav-arrow {
+    display: block;
   }
 }
 
@@ -150,7 +195,6 @@ a {
   right: 15px;
 }
 
-/* Nav indicators – make clickable/interactive if possible */
 .nav-indicator {
   border-color: #006666;
 }
@@ -296,7 +340,6 @@ html {
 
 .left-column, .right-column {
     flex: 1;
-    text-align: left;
     padding: 20px;
 }
 
@@ -339,7 +382,7 @@ html {
 
 .doctors-grid {
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
     max-width: 100%;
@@ -585,8 +628,8 @@ html {
     }
 
     .doctor-card-group {
-        min-width: 280px; /* Maintain minimum width on tablets */
-        width: calc(50% - 20px); /* Two cards per row on tablets */
+        min-width: 280px;
+        width: calc(50% - 20px);
     }
 
 
@@ -634,45 +677,47 @@ html {
     }
 
     .doctors-grid {
-        flex-direction: column; /* Stack cards vertically on mobile */
-        align-items: center; /* Center cards */
-        overflow-x: hidden; /* Remove horizontal scroll */
-        justify-content: center; /* Center cards */
+        flex-direction: column;
+        align-items: center;
+        overflow-x: hidden;
+        justify-content: center;
+        flex-wrap: wrap;
     }
 
     .doctor-card-group {
-        flex-direction: row; /* Image then description */
-        min-width: unset; /* Remove min-width constraint */
-        width: 90%; /* Take more width on mobile */
-        max-width: 400px; /* Limit max width for readability */
-        margin-bottom: 20px; /* Add space between stacked cards */
-        padding: 10px; /* Add some padding inside the card */
+        flex-direction: row;
+        min-width: unset;
+        width: 90%;
+        max-width: 400px;
+        margin-bottom: 20px;
+        padding: 10px;
+        box-sizing: border-box;
     }
 
     .doctor-card-group .image-box {
-        flex: 0 0 auto; /* Allow image box to size naturally */
-        height: auto; /* Allow image box to size naturally */
-        overflow: visible; /* Make overflow visible */
-        border-radius: 0; /* Remove border-radius */
-        margin-right: 15px; /* Space between image and text */
+        flex: 0 0 auto;
+        height: auto;
+        overflow: visible;
+        border-radius: 0;
+        margin-right: 15px;
     }
 
     .doctor-card-group .image-box img {
         width: 100%;
-        height: auto; /* Ensure image displays fully */
-        object-fit: contain; /* Ensure image is fully contained */
+        height: auto;
+        object-fit: contain;
     }
 
     .doctor-card-group .description-box {
-        text-align: left; /* Align text to the left */
-        padding: 0; /* Remove padding from description box */
-        flex: 1; /* Allow description box to take remaining space */
+        text-align: left;
+        padding: 0;
+        flex: 1;
     }
 
     .doctor-card-group .description-box p {
-        text-align: left; /* Align text to the left on mobile */
-        padding: 0; /* Remove padding from paragraphs */
-        font-size: 0.9rem; /* Adjust font size for mobile readability */
+        text-align: left;
+        padding: 0;
+        font-size: 0.9rem;
     }
 
     .footor-heading h1 {
@@ -699,27 +744,28 @@ html {
     }
 }
 
-/* For very small mobile devices (e.g., less than 480px) */
+/* For very small mobile devices */
 @media screen and (max-width: 480px) {
     .doctor-card-group {
-        min-width: unset; /* Remove min-width constraint */
-        width: 95%; /* Slightly smaller width for very small screens */
-        flex-direction: column; /* Stack image and description vertically */
-        align-items: center; /* Center content */
+        min-width: unset;
+        width: 95%;
+        flex-direction: column;
+        align-items: center;
+        box-sizing: border-box;
     }
 
     .doctor-card-group .image-box {
-        margin-right: 0; /* Remove right margin */
-        margin-bottom: 10px; /* Add bottom margin for spacing */
-        border-radius: 0; /* Ensure no border-radius on very small screens */
+        margin-right: 0;
+        margin-bottom: 10px;
+        border-radius: 0;
     }
 
     .doctor-card-group .description-box {
-        text-align: center; /* Center text on very small screens */
+        text-align: center;
     }
 
     .doctor-card-group .description-box p {
-        text-align: center; /* Center text on very small screens */
+        text-align: center;
     }
 }
 
