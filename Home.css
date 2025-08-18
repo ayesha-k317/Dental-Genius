@@ -10,7 +10,6 @@
     text-align: center;
 }
 
-/* Left Navigation Indicators */
 .left-nav-indicators {
   display: none;
 }
@@ -23,7 +22,6 @@
   display: none;
 }
 
-/* Hamburger Menu */
 .hamburger-menu {
   position: fixed;
   top: 20px;
@@ -35,7 +33,7 @@
   padding: 10px;
   width: 40px;
   height: 40px;
-  display: none;
+  display: none; 
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -49,11 +47,10 @@
   transition: 0.3s;
 }
 
-/* Sidebar Navigation */
 .sidebar-nav {
   position: fixed;
   top: 0;
-  right: -260px;
+  right: -260px; 
   left: auto;
   height: 100vh;
   width: 240px;
@@ -68,7 +65,7 @@
 }
 
 .sidebar-nav.active {
-  right: 0; /* Show when active on mobile */
+  right: 0; 
 }
 
 .nav-item {
@@ -120,68 +117,68 @@
 
 @media (min-width: 769px) {
   .hamburger-menu {
-    display: flex;
+    display: flex; 
   }
 
   .sidebar-nav {
-    position: fixed;
+    position: fixed; 
     top: 0;
-    right: -260px;
+    right: -260px; 
     left: auto;
     height: 100vh;
-    width: 240px;
+    width: 240px; 
     background: #fff;
     display: flex;
-    flex-direction: column;
+    flex-direction: column; 
     padding-top: 80px;
     gap: 8px;
     z-index: 999;
-    transition: right 0.3s ease;
+    transition: right 0.3s ease; 
     box-shadow: -2px 0 5px rgba(0,0,0,0.2);
   }
 
   .sidebar-nav.active {
-    right: 0;
+    right: 0; 
   }
 
   .nav-item {
-    padding: 10px 15px;
-    margin: 0;
+    padding: 10px 15px; 
+    margin: 0; 
   }
 
   .nav-icon {
-    margin-right: 8px;
+    margin-right: 8px; 
   }
 
   .nav-arrow {
-    display: none;
+    display: none; 
   }
 }
 
 @media (max-width: 768px) {
   .hamburger-menu {
-    display: flex;
+    display: flex; 
   }
 
   .sidebar-nav {
-    width: min(80vw, 280px);
-    height: 100vh;
-    position: fixed;
-    padding-top: 80px;
-    transition: right 0.3s ease;
-    flex-direction: column;
-    justify-content: flex-start;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    width: min(80vw, 280px); 
+    height: 100vh; 
+    position: fixed; 
+    padding-top: 80px; 
+    transition: right 0.3s ease; 
+    flex-direction: column; 
+    justify-content: flex-start; 
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2); 
   }
 
   .nav-item {
     padding: 14px 18px;
     font-size: 1rem;
-    margin: 0 12px;
+    margin: 0 12px; 
   }
 
   .nav-arrow {
-    display: block;
+    display: block; 
   }
 }
 
@@ -189,7 +186,6 @@ a {
   text-decoration: none;
 }
 
-/* Hamburger positioning & shadow */
 .hamburger-menu {
   top: 15px;
   right: 15px;
@@ -203,7 +199,6 @@ a {
   background: #006666;
 }
 
-/* Add hover */
 .nav-indicator:hover {
   background-color: #008080;
   transform: scale(1.1);
@@ -325,6 +320,7 @@ html {
 .content-wrapper {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     max-width: 1200px;
     margin: 0 auto;
     gap: 60px;
@@ -382,10 +378,10 @@ html {
 
 .doctors-grid {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     gap: 20px;
-    max-width: 100%;
+    max-width: 1200px;
     margin: 0 auto;
     overflow-x: hidden;
     padding-bottom: 0;
@@ -612,7 +608,6 @@ html {
 }
 
 
-/* For tablets */
 @media screen and (max-width: 1024px) {
     .content-wrapper {
         flex-direction: column;
@@ -632,6 +627,13 @@ html {
         width: calc(50% - 20px);
     }
 
+    .doctors-grid {
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
 
     .footer-container {
         gap: 100px;
@@ -640,7 +642,6 @@ html {
     }
 }
 
-/* For mobile devices */
 @media screen and (max-width: 768px) {
     header h1 {
         font-size: 1rem;
@@ -744,7 +745,6 @@ html {
     }
 }
 
-/* For very small mobile devices */
 @media screen and (max-width: 480px) {
     .doctor-card-group {
         min-width: unset;
@@ -769,7 +769,6 @@ html {
     }
 }
 
-/* Footer links */
 .footer-links {
     margin-top: 24px;
     font-family: "Lato", sans-serif;
@@ -782,7 +781,6 @@ html {
     text-decoration: underline;
 }
 
-/* Modal styles for Cookies/Policy popups */
 .modal-overlay[hidden] { display: none; }
 .modal-overlay {
   position: fixed;
@@ -826,7 +824,6 @@ html {
   background: #e6e6e6;
 }
 
-/* Cookie consent banner */
 .cookie-banner[hidden] { display: none; }
 .cookie-banner {
   position: fixed;
