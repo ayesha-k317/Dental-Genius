@@ -28,7 +28,7 @@ body {
   padding: 10px;
   width: 40px;
   height: 40px;
-  display: flex;
+  display: none; /* Hidden by default */
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -47,7 +47,7 @@ body {
 .sidebar-nav {
   position: fixed;
   top: 0;
-  left: 0;
+  left: 0; /* Visible by default on larger screens */
   height: 100vh;
   width: 240px;
   background: #fff;
@@ -60,12 +60,16 @@ body {
   box-shadow: 2px 0 10px rgba(0,0,0,0.08);
 }
 
-.sidebar-nav:not(.active) {
-  left: -260px;
-}
-
-.sidebar-nav.active {
-  left: 0;
+/* Hide sidebar by default on smaller screens */
+@media (max-width: 768px) {
+  .sidebar-nav {
+    left: -240px; /* Hidden by default on smaller screens */
+    display: none; /* Ensure it's completely hidden */
+  }
+  .sidebar-nav.active {
+    left: 0; /* Show sidebar when active */
+    display: flex; /* Display when active */
+  }
 }
 
 .nav-item {
@@ -113,6 +117,19 @@ body {
 .container {
     max-width: 1000px;
     margin: auto;
+    padding: 0 15px; /* Add some padding for smaller screens */
+    transition: margin-left 0.3s ease; /* Smooth transition for content shift */
+}
+
+body.sidebar-open .container {
+  margin-left: 240px; /* Shift content when sidebar is open */
+}
+
+/* Adjust container margin for larger screens when sidebar is open */
+@media (min-width: 769px) {
+  .container {
+    margin-left: 240px; /* Shift content when sidebar is open on desktop */
+  }
 }
 
 /* Navbar styling: Flexbox layout for the navigation bar */
@@ -192,6 +209,7 @@ body {
     padding: 1.5rem;
     animation: fadeIn 1.5s ease-out;
     overflow-x: auto;
+    width: 100%; /* Ensure it takes full width on smaller screens */
 }
 
 /* Header for the table: Flexbox for alignment, font weight, and margin */
@@ -208,13 +226,14 @@ body {
 table {
     width: 100%;
     border-collapse: separate;
-    table-layout: fixed;
+    table-layout: auto; /* Changed to auto for better responsiveness */
 }
 
 /* Scrollable table body styling */
 .table-scroll {
     height: 200px;
     overflow-y: auto;
+    overflow-x: auto; /* Added for horizontal scrolling if needed */
 }
 
 /* Table header cell styling: Aligns text, adds padding */
@@ -223,6 +242,7 @@ th {
     padding-bottom: 0.5rem;
     color: gray;
     padding-left: 1rem;
+    /* Removed white-space: nowrap for better mobile responsiveness */
 }
 
 /* Appointment data cell styling: Adds padding and transition effect */
@@ -230,6 +250,7 @@ th {
     background: white;
     padding: 1rem;
     transition: transform 0.2s ease;
+    /* Removed white-space: nowrap for better mobile responsiveness */
 }
 
 /* Table row styling */
@@ -253,6 +274,7 @@ th, td {
     background: white;
     padding: 1rem;
     transition: transform 0.2s ease;
+    /* Removed white-space: nowrap for better mobile responsiveness */
 }
 
 /* Hover effect for patient rows: Enlarges row slightly and changes background */
@@ -314,7 +336,7 @@ th, td {
     text-decoration: none;
 }
 
-
+/* Remove old floating logout icon styles */
 .logout i { display: none; }
 
 /* Center Appointments and Patients sections */
@@ -416,5 +438,94 @@ th, td {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 15px; /* Add padding for smaller screens */
 }
 
+/* Media queries for Staff-Dashboard responsiveness */
+@media (max-width: 768px) {
+    .sidebar-nav {
+        width: 240px; /* Keep original width for consistency */
+    }
+    /* Ensure hamburger menu is only visible on smaller screens */
+    .hamburger-menu {
+      display: flex; /* Show hamburger on smaller screens */
+    }
+
+    .container {
+        margin-left: 0 !important; /* Override margin-left when sidebar is active */
+        padding-left: 20px; /* Adjust padding */
+        padding-right: 20px;
+    }
+
+    .welcome-text {
+        font-size: 1.2rem; /* Adjust font size */
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .future-card {
+        padding: 1rem; /* Adjust padding */
+    }
+
+    .appointments h3,
+    .patient h3 {
+        font-size: 1.2rem; /* Adjust font size */
+        margin: 1rem 0;
+    }
+
+    .table-container {
+        padding: 1rem; /* Adjust padding */
+    }
+
+    th, td {
+        padding: 0.8rem; /* Adjust padding for table cells */
+        font-size: 0.9rem; /* Adjust font size for table text */
+    }
+}
+
+@media (max-width: 480px) {
+    .sidebar-nav {
+        width: 100%; /* Full width sidebar on very small screens */
+        left: -100%; /* Hide it completely */
+    }
+    .sidebar-nav.active {
+        left: 0;
+    }
+    body.sidebar-open .container {
+      margin-left: 0; /* No content shift on very small screens */
+    }
+    .hamburger-menu {
+      display: flex; /* Ensure hamburger is visible */
+    }
+    /* Ensure sidebar is hidden by default on very small screens */
+    .sidebar-nav {
+      display: none;
+    }
+    .sidebar-nav.active {
+      display: flex;
+    }
+    .hamburger-menu {
+        left: 10px;
+        top: 10px;
+    }
+    .container {
+        padding: 10px;
+    }
+    .welcome-text {
+        font-size: 1rem;
+    }
+    .future-card {
+        padding: 0.8rem;
+    }
+    .appointments h3,
+    .patient h3 {
+        font-size: 1rem;
+    }
+    .table-container {
+        padding: 0.8rem;
+    }
+    th, td {
+        padding: 0.6rem;
+        font-size: 0.8rem;
+    }
+}
